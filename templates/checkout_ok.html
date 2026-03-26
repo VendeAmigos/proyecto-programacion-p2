@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-wrapper" style="min-height: 50vh;">
+    <div class="auth-box" style="text-align: center; max-width: 500px;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🎉</div>
+        <h2>¡Pedido Confirmado!</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 1.1rem;">
+            Gracias por tu compra. Tu número de pedido es <strong>#{{ pedido_id }}</strong>.
+        </p>
+        
+        <div style="background: var(--surface-color); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: left;">
+            <p style="margin: 0; font-size: 0.9rem; color: var(--text-secondary);">
+                Hemos enviado un correo de confirmación (simulado). Tus productos llegarán pronto.
+            </p>
+        </div>
+
+        <a href="{{ url_for('index') }}" class="btn">Volver a la tienda</a>
+    </div>
+</div>
+{% endblock %}

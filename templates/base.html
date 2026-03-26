@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ title or "Audio Minimal" }}</title>
+  
+  <link rel="stylesheet" href="{{ url_for('static', filename='normalize.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('index') }}">AUDIO.</a>
+    
+    <nav class="nav-links">
+        <a href="{{ url_for('index') }}" class="active">Tienda</a>
+        {% if user %}
+            <!-- <span class="user-info">Hola, {{ user.username }}</span> -->
+            {% if user.es_admin %}
+                <a href="{{ url_for('dashboard') }}">Admin</a>
+            {% endif %}
+            <a href="{{ url_for('logout') }}">Salir</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Cuenta</a>
+            <a href="{{ url_for('registro') }}" class="btn btn-secondary" style="padding: 0.4rem 1rem;">Registrar</a>
+        {% endif %}
+        <a href="{{ url_for('carrito') }}">Bolsa ({{ carrito_count or 0 }})</a>
+    </nav>
+  </header>
+
+  <main>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="container" style="margin-top: 1rem; margin-bottom: 0; padding-bottom: 0;">
+          {% for m in messages %}
+            <div class="alert">{{ m }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Audio Minimal Store. Diseñado para puristas del sonido.</p>
+  </footer>
+</body>
+</html>

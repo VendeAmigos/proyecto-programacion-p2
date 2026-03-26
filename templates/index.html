@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero">
+  <h1>Sonido Puro.</h1>
+  <p>Experimenta la música tal como el artista la concibió.</p>
+  <a href="#catalogo" class="btn">Explorar Colección</a>
+</section>
+
+<!-- Promo Banner -->
+<section class="promo-banner">
+  <h2>Cancelación Activa.</h2>
+  <p>Silencia el mundo y concéntrate en cada nota.</p>
+  <img src="https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/airpods-max-hero-select-202011?wid=940&hei=1112&fmt=jpeg&qlt=90&.v=1604709293000" style="max-width: 400px; width: 100%; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.1);" alt="Headphones">
+</section>
+
+<div class="container" id="catalogo">
+  <div class="section-title">Catálogo Premium</div>
+
+  <div class="grid">
+    {% for p in productos %}
+      <div class="card">
+        <div class="card-image-container">
+          <!-- Force a fallback if image is missing or bad -->
+          <img src="{{ p['imagen'] or 'https://via.placeholder.com/400x400?text=Audio' }}" alt="{{ p['nombre'] }}">
+        </div>
+        
+        <h3>{{ p["nombre"] }}</h3>
+        <p class="price">${{ "%.2f"|format(p["precio"]) }}</p>
+        
+        <form method="post" action="{{ url_for('carrito_agregar') }}">
+          <input type="hidden" name="producto_id" value="{{ p['id'] }}">
+          <input type="hidden" name="cantidad" value="1">
+          <button class="btn" type="submit">Agregar</button>
+          <a href="{{ url_for('producto', producto_id=p['id']) }}" class="btn btn-secondary" style="margin-left: 0.5rem;">Ver</a>
+        </form>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
