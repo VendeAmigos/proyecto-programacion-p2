@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="product-detail">
+    <div class="breadcrumb">
+        <a href="{{ url_for('index') }}">Catálogo</a> 
+        <span class="breadcrumb__separator">›</span>
+        <span>{{ producto.nombre }}</span>
+    </div>
+
+    <div class="product-detail__container">
+        <div class="product-detail__image">
+            <img src="{{ producto.imagen_url or 'https://via.placeholder.com/500x500?text=Smartwatch' }}" 
+                 alt="{{ producto.nombre }}" 
+                 class="product-detail__img">
+        </div>
+
+        <div class="product-detail__content">
+            {% if producto.destacado %}
+                <span class="badge badge--featured">⭐ Producto Destacado</span>
+            {% endif %}
+
+            <h1 class="product-detail__title">{{ producto.nombre }}</h1>
+
+            <div class="product-detail__price-section">
+                <span class="product-detail__price">${{ "%.2f"|format(producto.precio) }}</span>
+                <span class="stock {% if producto.stock <= 5 %}stock--low{% endif %}">
+                    {% if producto.stock > 0 %}
+                        <strong>{{ producto.stock }}</strong> disponibles
+                    {% else %}
+                        <strong>Agotado</strong>
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="product-detail__description">
+                <h2 class="desc-title">Descripción</h2>
+                <p>{{ producto.descripcion }}</p>
+            </div>
+
+            {% if producto.stock > 0 %}
+            <form method="POST" action="{{ url_for('carrito_agregar') }}" class="product-detail__form">
+                <div class="form-group">
+                    <label for="cantidad" class="label">Cantidad</label>
+                    <input 
+                        type="number" 
+                        id="cantidad" 
+                        name="cantidad" 
+                        min="1" 
+                        max="{{ producto.stock }}" 
+                        value="1"
+                        class="input qty-input-large"
+                        required
+                    >
+                </div>
+
+                <input type="hidden" name="producto_id" value="{{ producto.id }}">
+
+                <div class="product-detail__actions">
+                    <button type="submit" class="btn btn--primary btn--large btn-add-cart" data-product-id="{{ producto.id }}" data-product-name="{{ producto.nombre }}">
+                        🛒 Agregar al Carrito
+                    </button>
+                    <a href="{{ url_for('carrito') }}" class="btn btn--secondary btn--large">
+                        Ver Carrito
+                    </a>
+                </div>
+            </form>
+            {% else %}
+            <div class="alert alert--warning">
+                Este producto está agotado. Intenta con otro.
+            </div>
+            {% endif %}
+
+            <div class="product-detail__specs">
+                <h3 class="specs-title">Características</h3>
+                <ul class="specs-list">
+                    <li>✓ Pantalla AMOLED de alta resolución</li>
+                    <li>✓ Resistente al agua (5 ATM)</li>
+                    <li>✓ Batería de larga duración</li>
+                    <li>✓ Monitoreo de salud avanzado</li>
+                    <li>✓ GPS integrado</li>
+                    <li>✓ Conectividad Bluetooth 5.0</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

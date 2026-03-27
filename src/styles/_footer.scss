@@ -1,0 +1,20 @@
+// ===== FOOTER =====
+
+.footer {
+    background: $secondary-color;
+    border-top: 1px solid $border-color;
+    padding: 40px 20px;
+    text-align: center;
+    color: $text-secondary;
+    margin-top: 60px;
+
+    &__content {
+        max-width: 1400px;
+        margin: 0 auto;
+
+        p {
+            margin: 8px 0;
+            font-size: 0.9rem;
+        }
+    }
+}

@@ -1,0 +1,46 @@
+// ===== HERO SECTION =====
+
+.hero {
+    background: linear-gradient(135deg, $secondary-color 0%, $white 100%);
+    padding: 100px 20px;
+    text-align: center;
+
+    &__content {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    &__title {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: $text-primary;
+
+        @include tablet {
+            font-size: 2rem;
+        }
+
+        @include mobile {
+            font-size: 1.5rem;
+        }
+    }
+
+    &__subtitle {
+        font-size: 1.3rem;
+        color: $text-secondary;
+        margin-bottom: 40px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+
+        @include tablet {
+            font-size: 1.1rem;
+        }
+    }
+
+    &__greeting {
+        font-size: 1.1rem;
+        color: $primary-color;
+        font-weight: 500;
+    }
+}

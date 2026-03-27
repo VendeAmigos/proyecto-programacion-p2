@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Banner -->
+<section class="hero">
+    <div class="hero__content">
+        <h1 class="hero__title">Los mejores smartwatches del mercado</h1>
+        <p class="hero__subtitle">Tecnología, estilo y rendimiento en tu muñeca</p>
+        {% if not usuario_logueado %}
+            <a href="{{ url_for('registro') }}" class="btn btn--primary btn--large">
+                Comienza a comprar
+            </a>
+        {% else %}
+            <p class="hero__greeting">Bienvenido de vuelta, {{ usuario_logueado.nombre }}!</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Productos Destacados -->
+{% if destacados %}
+<section class="featured-section">
+    <h2 class="section-title">Productos Destacados</h2>
+    <div class="products-grid">
+        {% for producto in destacados %}
+        <div class="product-card product-card--featured">
+            <div class="product-card__header">
+                <span class="badge badge--featured">⭐ Destacado</span>
+            </div>
+            
+            <div class="product-card__image">
+                <img src="{{ producto.imagen_url or 'https://resources.claroshop.com/medios-plazavip/t1/1737579463ELEGANCEROSAjpg' }}" 
+                     alt="{{ producto.nombre }}" 
+                     class="product-image">
+            </div>
+            
+            <div class="product-card__body">
+                <h3 class="product-card__title">{{ producto.nombre }}</h3>
+                <p class="product-card__description">{{ producto.descripcion[:80] }}...</p>
+                
+                <div class="product-card__footer">
+                    <div class="price-stock">
+                        <span class="price">${{ "%.2f"|format(producto.precio) }}</span>
+                        <span class="stock {% if producto.stock <= 5 %}stock--low{% endif %}">
+                            {% if producto.stock > 0 %}
+                                Stock: {{ producto.stock }}
+                            {% else %}
+                                Agotado
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="product-actions">
+                        <a href="{{ url_for('producto', producto_id=producto.id) }}" class="btn btn--secondary">
+                            Ver Detalles
+                        </a>
+                        {% if producto.stock > 0 %}
+                            <form method="POST" action="{{ url_for('carrito_agregar') }}" class="add-cart-form">
+                                <input type="hidden" name="producto_id" value="{{ producto.id }}">
+                                <input type="number" name="cantidad" class="qty-input" min="1" max="{{ producto.stock }}" value="1">
+                                <button type="submit" class="btn btn--primary btn-add-cart" data-product-id="{{ producto.id }}" data-product-name="{{ producto.nombre }}">Agregar</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Catálogo Completo -->
+<section class="catalog-section">
+    <h2 class="section-title">Catálogo Completo</h2>
+    <div class="products-grid">
+        {% for producto in productos %}
+        <div class="product-card">
+            <div class="product-card__image">
+                <img src="{{ producto.imagen_url or 'https://via.placeholder.com/300x300?text=Smartwatch' }}" 
+                     alt="{{ producto.nombre }}" 
+                     class="product-image">
+            </div>
+            
+            <div class="product-card__body">
+                <h3 class="product-card__title">{{ producto.nombre }}</h3>
+                <p class="product-card__description">{{ producto.descripcion[:60] }}...</p>
+                
+                <div class="product-card__footer">
+                    <div class="price-stock">
+                        <span class="price">${{ "%.2f"|format(producto.precio) }}</span>
+                        <span class="stock {% if producto.stock <= 5 %}stock--low{% endif %}">
+                            {% if producto.stock > 0 %}
+                                {{ producto.stock }} en stock
+                            {% else %}
+                                Agotado
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="product-actions">
+                        <a href="{{ url_for('producto', producto_id=producto.id) }}" class="btn btn--secondary btn--small">
+                            Ver
+                        </a>
+                        {% if producto.stock > 0 %}
+                            <form method="POST" action="{{ url_for('carrito_agregar') }}" class="add-cart-form">
+                                <input type="hidden" name="producto_id" value="{{ producto.id }}">
+                                <input type="number" name="cantidad" class="qty-input" min="1" max="{{ producto.stock }}" value="1">
+                                <button type="submit" class="btn btn--primary btn--small btn-add-cart" data-product-id="{{ producto.id }}" data-product-name="{{ producto.nombre }}">+</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Call to Action -->
+{% if not usuario_logueado %}
+<section class="cta-section">
+    <h2 class="cta-title">¿Listo para empezar?</h2>
+    <p class="cta-subtitle">Crea tu cuenta hoy y disfruta de los mejores smartwatches</p>
+    <div class="cta-buttons">
+        <a href="{{ url_for('registro') }}" class="btn btn--primary btn--large">Registrarse</a>
+        <a href="{{ url_for('login') }}" class="btn btn--outline btn--large">Iniciar Sesión</a>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

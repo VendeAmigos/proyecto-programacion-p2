@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="admin-container">
+    <h1 class="admin-title">🛠️ Panel de Administración</h1>
+    
+    <div class="admin-header">
+        <p class="admin-subtitle">Gestiona tu catálogo de smartwatches</p>
+        <a href="{{ url_for('admin_producto_nuevo') }}" class="btn btn--primary">
+            ➕ Agregar Nuevo Producto
+        </a>
+    </div>
+
+    <div class="products-table-container">
+        <table class="products-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre del Producto</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Destacado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if productos %}
+                    {% for producto in productos %}
+                    <tr>
+                        <td>#{{ producto.id }}</td>
+                        <td>
+                            <strong>{{ producto.nombre }}</strong>
+                            <br>
+                            <small class="text-muted">{{ producto.descripcion[:50] }}...</small>
+                        </td>
+                        <td>${{ "%.2f"|format(producto.precio) }}</td>
+                        <td>
+                            <span class="stock {% if producto.stock <= 5 %}stock--low{% endif %}">
+                                {{ producto.stock }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if producto.destacado %}
+                                <span class="badge badge--success">Sí</span>
+                            {% else %}
+                                <span class="badge badge--secondary">No</span>
+                            {% endif %}
+                        </td>
+                        <td class="actions-cell">
+                            <a href="{{ url_for('admin_producto_editar', producto_id=producto.id) }}" 
+                               class="btn btn--secondary btn--small">
+                                ✏️ Editar
+                            </a>
+                            <form method="POST" 
+                                  action="{{ url_for('admin_producto_eliminar', producto_id=producto.id) }}" 
+                                  class="delete-form"
+                                  onsubmit="return confirm('¿Eliminar este producto? Esta acción no se puede deshacer.');">
+                                <button type="submit" class="btn btn--danger btn--small">
+                                    🗑️ Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">
+                        <p>No hay productos. <a href="{{ url_for('admin_producto_nuevo') }}">Crea uno ahora</a></p>
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="admin-stats">
+        <div class="stat-card">
+            <h3>Total de Productos</h3>
+            <p class="stat-value">{{ productos|length }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Sin Stock</h3>
+            <p class="stat-value">{{ productos|selectattr('stock', 'equalto', 0)|list|length }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Productos Destacados</h3>
+            <p class="stat-value">{{ productos|selectattr('destacado', 'equalto', 1)|list|length }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

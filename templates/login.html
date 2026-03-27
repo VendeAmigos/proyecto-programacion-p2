@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h1 class="auth-title">Iniciar Sesión</h1>
+        
+        <form method="POST" class="auth-form">
+            <div class="form-group">
+                <label for="email" class="label">Email</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    class="input" 
+                    placeholder="tu@email.com"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="label">Contraseña</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="input" 
+                    placeholder="••••••••"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--full">
+                Iniciar Sesión
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>¿No tienes cuenta? 
+                <a href="{{ url_for('registro') }}" class="auth-link">Regístrate aquí</a>
+            </p>
+        </div>
+
+        <div class="demo-credentials">
+            <p class="demo-title">📱 Prueba la cuenta admin:</p>
+            <p><strong>Email:</strong> admin@smartwatches.com</p>
+            <p><strong>Contraseña:</strong> admin123</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+// ===== AUTHENTICATION =====
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding: 20px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 400px;
+    background: $white;
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: $shadow-md;
+
+    @include mobile {
+        padding: 20px;
+    }
+}
+
+.auth-title {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+}
+
+.auth-form {
+    margin-bottom: 30px;
+}
+
+.auth-footer,
+.demo-credentials {
+    text-align: center;
+    color: $text-secondary;
+    font-size: 0.9rem;
+}
+
+.auth-footer {
+    margin-bottom: 20px;
+}
+
+.auth-link {
+    color: $primary-color;
+    font-weight: 600;
+}
+
+.demo-credentials {
+    background: #f0f9ff;
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.demo-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: $text-primary;
+}

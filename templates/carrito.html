@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="cart-container">
+    <h1 class="cart-title">🛒 Tu Carrito de Compras</h1>
+
+    {% if es_guest %}
+        <!-- GUEST CART (localStorage) -->
+        <div id="guest-cart-content" style="display: none;">
+            <div class="cart-content">
+                <div class="cart-items">
+                    <table class="cart-table">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
+                                <th>Subtotal</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guest-cart-items">
+                            <!-- Loaded by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="cart-summary">
+                    <div class="summary-card">
+                        <h3 class="summary-title">Resumen de Pedido</h3>
+                        
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span id="guest-subtotal">$0.00</span>
+                        </div>
+                        
+                        <div class="summary-row">
+                            <span>Impuesto (estimado):</span>
+                            <span id="guest-tax">$0.00</span>
+                        </div>
+                        
+                        <div class="summary-divider"></div>
+                        
+                        <div class="summary-row summary-row--total">
+                            <span>Total:</span>
+                            <span class="total-amount" id="guest-total">$0.00</span>
+                        </div>
+
+                        <a href="{{ url_for('login') }}" class="btn btn--primary btn--large" style="width: 100%; text-align: center; margin-top: 20px;">
+                            Inicia Sesión para Comprar
+                        </a>
+                        
+                        <a href="{{ url_for('registro') }}" class="btn btn--outline btn--large" style="width: 100%; text-align: center; margin-top: 10px;">
+                            Crear Cuenta
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty guest cart message -->
+        <div id="empty-guest-cart" class="empty-cart" style="display: none;">
+            <div class="empty-cart__content">
+                <p class="empty-cart__icon">🛍️</p>
+                <h2>Tu carrito está vacío</h2>
+                <p>¡Comienza a agregar smartwatches a tu carrito!</p>
+                <a href="{{ url_for('index') }}" class="btn btn--primary btn--large">
+                    Volver al Catálogo
+                </a>
+            </div>
+        </div>
+
+        <script>
+        // Load and display guest cart from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const guestCart = GuestCart.getCart();
+            const productIds = Object.keys(guestCart);
+            
+            if (productIds.length === 0) {
+                document.getElementById('empty-guest-cart').style.display = 'block';
+                return;
+            }
+            
+            document.getElementById('guest-cart-content').style.display = 'block';
+            
+            // Fetch product details from server
+            fetch('/api/productos?ids=' + productIds.join(','))
+                .then(r => r.json())
+                .then(products => {
+                    let subtotal = 0;
+                    const tbody = document.getElementById('guest-cart-items');
+                    tbody.innerHTML = '';
+                    
+                    products.forEach(product => {
+                        const cantidad = guestCart[product.id];
+                        const itemTotal = product.precio * cantidad;
+                        subtotal += itemTotal;
+                        
+                        const tr = document.createElement('tr');
+                        tr.className = 'cart-item';
+                        tr.innerHTML = `
+                            <td class="product-info">
+                                <a href="/producto/${product.id}" class="product-name">
+                                    ${product.nombre}
+                                </a>
+                            </td>
+                            <td class="price">$${product.precio.toFixed(2)}</td>
+                            <td class="quantity">
+                                <input type="number" min="1" value="${cantidad}" class="input qty-input guest-qty" data-product-id="${product.id}" onchange="GuestCart.updateItem(${product.id}, this.value); location.reload();">
+                            </td>
+                            <td class="subtotal">$${itemTotal.toFixed(2)}</td>
+                            <td class="actions">
+                                <button type="button" class="btn btn--danger btn--small" onclick="GuestCart.removeItem(${product.id}); location.reload();">
+                                    Eliminar
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                    
+                    const tax = subtotal * 0.16;
+                    const total = subtotal + tax;
+                    
+                    document.getElementById('guest-subtotal').textContent = '$' + subtotal.toFixed(2);
+                    document.getElementById('guest-tax').textContent = '$' + tax.toFixed(2);
+                    document.getElementById('guest-total').textContent = '$' + total.toFixed(2);
+                });
+        });
+        </script>
+    {% elif not items %}
+    <div class="empty-cart">
+        <div class="empty-cart__content">
+            <p class="empty-cart__icon">🛍️</p>
+            <h2>Tu carrito está vacío</h2>
+            <p>¡Comienza a agregar smartwatches a tu carrito!</p>
+            <a href="{{ url_for('index') }}" class="btn btn--primary btn--large">
+                Volver al Catálogo
+            </a>
+        </div>
+    </div>
+    {% else %}
+    <div class="cart-content">
+        <div class="cart-items">
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                        <th>Subtotal</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr class="cart-item">
+                        <td class="product-info">
+                            <a href="{{ url_for('producto', producto_id=item.producto_id) }}" class="product-name">
+                                {{ item.nombre }}
+                            </a>
+                        </td>
+                        <td class="price">${{ "%.2f"|format(item.precio) }}</td>
+                        <td class="quantity">
+                            <form method="POST" action="{{ url_for('carrito_actualizar', producto_id=item.producto_id) }}" class="qty-form">
+                                <input 
+                                    type="number" 
+                                    name="cantidad" 
+                                    value="{{ item.cantidad }}"
+                                    min="1"
+                                    max="{{ item.cantidad * 2 }}"
+                                    class="input qty-input"
+                                    onchange="this.form.submit()"
+                                >
+                            </form>
+                        </td>
+                        <td class="subtotal">${{ "%.2f"|format(item.precio * item.cantidad) }}</td>
+                        <td class="actions">
+                            <form method="POST" action="{{ url_for('carrito_quitar', producto_id=item.producto_id) }}" class="delete-form">
+                                <button type="submit" class="btn btn--danger btn--small">
+                                    Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="cart-summary">
+            <div class="summary-card">
+                <h3 class="summary-title">Resumen de Pedido</h3>
+                
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span>${{ "%.2f"|format(total) }}</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span>Impuesto (estimado):</span>
+                    <span>${{ "%.2f"|format(total * 0.16) }}</span>
+                </div>
+                
+                <div class="summary-divider"></div>
+                
+                <div class="summary-row summary-row--total">
+                    <span>Total:</span>
+                    <span class="total-amount">${{ "%.2f"|format(total * 1.16) }}</span>
+                </div>
+
+                <form method="POST" action="{{ url_for('checkout') }}" class="checkout-form">
+                    <div class="form-group">
+                        <label for="nombre" class="label">Nombre Completo</label>
+                        <input 
+                            type="text" 
+                            id="nombre" 
+                            name="nombre" 
+                            class="input"
+                            value="{{ usuario_logueado.nombre if usuario_logueado else '' }}"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="label">Email</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            class="input"
+                            value="{{ usuario_logueado.email if usuario_logueado else '' }}"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="btn btn--primary btn--large btn--full">
+                        ✓ Proceder al Pago
+                    </button>
+                </form>
+
+                <a href="{{ url_for('index') }}" class="btn btn--outline btn--full">
+                    Continuar Comprando
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

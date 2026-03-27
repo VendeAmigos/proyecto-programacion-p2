@@ -1,0 +1,28 @@
+// ===================================
+// SMARTWATCH E-COMMERCE
+// Main SCSS Entry Point
+// ===================================
+
+// 1. Configuration & Helpers
+@import 'variables';
+@import 'mixins';
+
+// 2. Global Styles
+@import 'global';
+
+// 3. Components
+@import 'navbar';
+@import 'buttons';
+@import 'alerts';
+@import 'forms';
+
+// 4. Sections
+@import 'hero';
+@import 'products';
+@import 'auth';
+@import 'cart';
+@import 'admin';
+@import 'badges';
+@import 'cta';
+@import 'error';
+@import 'footer';

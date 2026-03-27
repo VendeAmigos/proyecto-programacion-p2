@@ -1,0 +1,65 @@
+// ===== GLOBAL STYLES =====
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: $font-family;
+    color: $text-primary;
+    background: $white;
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+// ===== TYPOGRAPHY =====
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 0.5em;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+
+a {
+    color: $primary-color;
+    text-decoration: none;
+    transition: $transition;
+
+    &:hover {
+        color: $primary-dark;
+    }
+}
+
+// ===== UTILITY CLASSES =====
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.muted {
+    color: #555;
+}
+
+.pill {
+    background: #eef1ff;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+}
+
+.text-center {
+    text-align: center;
+}

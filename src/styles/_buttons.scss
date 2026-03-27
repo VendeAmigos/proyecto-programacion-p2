@@ -1,0 +1,86 @@
+// ===== BUTTONS =====
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-weight: 500;
+    font-size: 1rem;
+    border: 1px solid $border-color;
+    cursor: pointer;
+    transition: $transition;
+    text-decoration: none;
+    gap: $spacing-sm;
+    font-family: inherit;
+    background: white;
+    color: $text-primary;
+
+    &--primary {
+        background: $primary-color;
+        color: $white;
+        border-color: $primary-color;
+
+        &:hover {
+            background: $primary-dark;
+            box-shadow: $shadow-md;
+        }
+    }
+
+    &--secondary {
+        background: $secondary-color;
+        color: $text-primary;
+
+        &:hover {
+            background: #f0f0f0;
+        }
+    }
+
+    &--outline {
+        background: transparent;
+        color: $primary-color;
+        border: 2px solid $primary-color;
+
+        &:hover {
+            background: $primary-color;
+            color: $white;
+        }
+    }
+
+    &--danger {
+        background: $danger-color;
+        color: $white;
+        border-color: $danger-color;
+
+        &:hover {
+            background: #ff3b30;
+            box-shadow: $shadow-md;
+        }
+    }
+
+    &--large {
+        padding: 16px 40px;
+        font-size: 1.1rem;
+    }
+
+    &--small {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+
+    &--full {
+        width: 100%;
+    }
+
+    &.primary {
+        border-color: #2b4eff;
+        background: #2b4eff;
+        color: white;
+    }
+
+    @include mobile {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+}

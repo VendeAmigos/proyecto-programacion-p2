@@ -1,0 +1,31 @@
+{
+  "name": "smartwatch-ecommerce",
+  "version": "1.0.0",
+  "description": "Modern e-commerce platform for smartwatches with Flask backend and Node.js build system",
+  "main": "app.py",
+  "scripts": {
+    "start": "npm run watch & python app.py",
+    "dev": "npm run watch",
+    "build": "node build/build.js",
+    "watch": "node build/watch.js",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "ecommerce",
+    "smartwatch",
+    "flask",
+    "sass",
+    "webpack"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "sass": "^1.69.5",
+    "chokidar": "^3.5.3",
+    "rimraf": "^5.0.5"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}

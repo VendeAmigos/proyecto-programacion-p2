@@ -1,0 +1,141 @@
+// ===== CART =====
+
+.cart-container {
+    padding: 40px 0;
+}
+
+.cart-title {
+    font-size: 2.2rem;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 80px 20px;
+
+    &__icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+    }
+
+    &__content {
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+        }
+
+        p {
+            color: $text-secondary;
+            margin-bottom: 30px;
+        }
+    }
+}
+
+.cart-content {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 40px;
+
+    @include tablet {
+        grid-template-columns: 1fr;
+    }
+}
+
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: $white;
+    border-radius: 14px;
+    overflow: hidden;
+    font-size: 0.9rem;
+
+    @include mobile {
+        font-size: 0.9rem;
+    }
+
+    thead {
+        border-bottom: 2px solid $border-color;
+    }
+
+    th {
+        padding: 16px;
+        text-align: left;
+        font-weight: 600;
+        color: $text-secondary;
+        background: $secondary-color;
+    }
+
+    td {
+        padding: 16px;
+        border-bottom: 1px solid $border-color;
+        vertical-align: middle;
+
+        @include mobile {
+            padding: 12px 8px;
+        }
+    }
+
+    tbody tr:hover {
+        background: #fafafa;
+    }
+}
+
+.product-name {
+    color: $primary-color;
+    font-weight: 500;
+}
+
+.qty-form {
+    display: inline;
+}
+
+.summary-card {
+    background: $secondary-color;
+    border-radius: 12px;
+    padding: 24px;
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+
+    @include tablet {
+        position: static;
+    }
+}
+
+.summary-title {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    color: $text-secondary;
+
+    &--total {
+        font-weight: 700;
+        color: $text-primary;
+        font-size: 1.1rem;
+    }
+}
+
+.total-amount {
+    color: $primary-color;
+    font-weight: 700;
+}
+
+.summary-divider {
+    height: 1px;
+    background: $border-color;
+    margin: 16px 0;
+}
+
+.checkout-form {
+    margin-top: 20px;
+}
+
+.delete-form {
+    display: inline;
+}

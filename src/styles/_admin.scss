@@ -1,0 +1,110 @@
+// ===== ADMIN =====
+
+.admin-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.admin-title {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+}
+
+.admin-subtitle {
+    color: $text-secondary;
+    margin-bottom: 30px;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid $border-color;
+
+    @include tablet {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+}
+
+.products-table-container {
+    overflow-x: auto;
+    margin-bottom: 40px;
+    border-radius: 12px;
+}
+
+.products-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: $white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: $shadow-sm;
+
+    thead {
+        background: $secondary-color;
+    }
+
+    th {
+        padding: 20px 16px;
+        text-align: left;
+        font-weight: 600;
+        color: $text-primary;
+        border-bottom: 2px solid $border-color;
+    }
+
+    td {
+        padding: 20px 16px;
+        border-bottom: 1px solid $border-color;
+        vertical-align: middle;
+    }
+
+    tbody tr:hover {
+        background: #fafafa;
+    }
+}
+
+.actions-cell {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.product-form {
+    background: $white;
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    padding: 40px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, $primary-color, $primary-dark);
+    color: $white;
+    padding: 24px;
+    border-radius: 12px;
+    text-align: center;
+
+    h3 {
+        font-size: 0.9rem;
+        font-weight: 500;
+        opacity: 0.9;
+        margin-bottom: 8px;
+    }
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+}

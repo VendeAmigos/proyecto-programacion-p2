@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="admin-container">
+    <h1 class="admin-title">➕ Agregar Nuevo Producto</h1>
+    
+    <form method="POST" class="product-form">
+        <div class="form-section">
+            <h2>Información Básica</h2>
+            
+            <div class="form-group">
+                <label for="nombre" class="label">Nombre del Producto *</label>
+                <input 
+                    type="text" 
+                    id="nombre" 
+                    name="nombre" 
+                    class="input" 
+                    placeholder="Ej: Pro Max Smartwatch"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="descripcion" class="label">Descripción *</label>
+                <textarea 
+                    id="descripcion" 
+                    name="descripcion" 
+                    class="textarea"
+                    rows="4"
+                    placeholder="Describe las características principales del producto"
+                    required
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="imagen_url" class="label">URL de la Imagen</label>
+                <input 
+                    type="url" 
+                    id="imagen_url" 
+                    name="imagen_url" 
+                    class="input" 
+                    placeholder="https://ejemplo.com/imagen.jpg"
+                >
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>Precios y Stock</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="precio" class="label">Precio ($) *</label>
+                    <input 
+                        type="number" 
+                        id="precio" 
+                        name="precio" 
+                        class="input" 
+                        step="0.01"
+                        min="0"
+                        placeholder="0.00"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="stock" class="label">Stock *</label>
+                    <input 
+                        type="number" 
+                        id="stock" 
+                        name="stock" 
+                        class="input" 
+                        min="0"
+                        placeholder="0"
+                        required
+                    >
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>Opciones</h2>
+            
+            <div class="form-group form-group--checkbox">
+                <input 
+                    type="checkbox" 
+                    id="destacado" 
+                    name="destacado" 
+                    value="1"
+                >
+                <label for="destacado" class="label">Marcar como destacado ⭐</label>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn--primary btn--large">
+                Crear Producto
+            </button>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn--secondary btn--large">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

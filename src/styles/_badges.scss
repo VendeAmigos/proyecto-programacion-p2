@@ -1,0 +1,29 @@
+// ===== BADGES =====
+
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+
+    &--featured {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    &--success {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    &--secondary {
+        background: $secondary-color;
+        color: $text-secondary;
+    }
+
+    &--danger {
+        background: #f8d7da;
+        color: #721c24;
+    }
+}
