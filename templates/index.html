@@ -1,0 +1,98 @@
+{# ============================================================
+  index.html — Página principal de la tienda (Home)
+  ============================================================
+  Hereda de base.html usando extends.
+  Rellena el bloque content con 3 secciones:
+    1. Hero        → pantalla completa de bienvenida con botón CTA
+    2. Promo Banner→ imagen destacada del producto estrella
+    3. Catálogo    → grid de todas las tarjetas de productos
+
+  Datos recibidos desde app.py → inicio():
+    productos → lista de todos los productos en la BD.
+      Cada producto tiene: id, nombre, precio, stock, imagen.
+  ============================================================ #}
+{% extends "base.html" %}
+{% block content %}
+
+<!-- ===== Sección Hero =====
+  Pantalla completa (85vh) con fondo negro y texto grande con gradiente.
+  El botón "Explorar Colección" lleva a la sección #catalogo
+  mediante scroll suave (gracias al href="#catalogo").
+-->
+<section class="hero">
+  <h1>Sonido Puro.</h1>
+  <p>Experimenta la música tal como el artista la concibió.</p>
+  <a href="#catalogo" class="btn">Explorar Colección</a>
+</section>
+
+<!-- ===== Banner Promocional =====
+  Sección de fondo gris que resalta un producto.
+  La imagen se carga desde /static/images/airpods-max.jpg.
+  Si el admin sube una imagen con ese mismo nombre desde el dashboard,
+  se actualiza aquí automáticamente sin tocar el código.
+-->
+{% if banner %}
+<section class="promo-banner" style="background-image: url('{{ banner['imagen'] }}');">
+  <h2>{{ banner['titulo'] }}</h2>
+  <p>{{ banner['subtitulo'] }}</p>
+</section>
+{% endif %}
+
+<!-- ===== Catálogo de Productos =====
+  Grid responsivo con una tarjeta por producto.
+  Recorre la lista "productos" recibida desde Flask.
+
+  Cada tarjeta contiene:
+    Imagen   → si no tiene imagen usa placeholder.jpg.
+               onerror garantiza que si el archivo no existe en el
+               servidor se muestre el placeholder en su lugar.
+    Nombre   → nombre del audífono
+    Precio   → formateado con 2 decimales
+    Agregar  → POST a /carrito/agregar con producto_id y cantidad=1.
+               Después de agregar, redirige de vuelta a esta página.
+    Ver      → navega a la página de detalle del producto.
+-->
+<div class="container" id="catalogo">
+  <div class="section-title">Catálogo Premium</div>
+
+  <div class="grid">
+    {% for p in productos %}
+      <div class="card">
+
+        <!-- Contenedor cuadrado de la imagen (aspect-ratio 1:1) -->
+        <div class="card-image-container">
+          <img
+            src="{{ p['imagen'] or '/static/images/placeholder.jpg' }}"
+            alt="{{ p['nombre'] }}"
+            onerror="this.onerror=null;this.src='/static/images/placeholder.jpg'"
+          >
+        </div>
+
+        <!-- Nombre del producto -->
+        <h3>{{ p["nombre"] }}</h3>
+
+        <!-- Precio con formato de 2 decimales -->
+        <p class="price">${{ "%.2f"|format(p["precio"]) }}</p>
+
+        <!-- Botones de acción -->
+        <div class="card-actions">
+
+          <!-- Formulario "Agregar al Carrito":
+               envía product_id y cantidad=1 al servidor.
+               La ruta /carrito/agregar guarda en la sesión y redirige aquí. -->
+          <form method="post" action="{{ url_for('carrito_agregar') }}">
+            <input type="hidden" name="producto_id" value="{{ p['id'] }}">
+            <input type="hidden" name="cantidad" value="1">
+            <button class="btn" type="submit">Agregar</button>
+          </form>
+
+          <!-- Enlace a la página de detalle del producto -->
+          <a href="{{ url_for('producto', producto_id=p['id']) }}" class="btn btn-secondary">Ver</a>
+
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

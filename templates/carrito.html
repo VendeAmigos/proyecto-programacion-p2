@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <div class="section-title">Tu Selección</div>
+
+  {% if not items %}
+    <div class="empty-cart">
+      <p>Tu bolsa de compras está vacía.</p>
+      <a href="{{ url_for('inicio') }}" class="btn">Explorar Colección</a>
+    </div>
+  {% else %}
+    <div class="cart-layout">
+      <!-- Lista de productos -->
+      <div class="stats-panel cart-table-panel">
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th class="center">Cantidad</th>
+              <th class="right">Precio</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for it in items %}
+            <tr>
+              <td>
+                <div class="cart-product">
+                  <img
+                    src="{{ it.p['imagen'] or '/static/images/placeholder.jpg' }}"
+                    alt="{{ it.p['nombre'] }}"
+                    class="cart-thumb"
+                    onerror="this.src='/static/images/placeholder.jpg'"
+                  >
+                  <div>
+                    <div class="cart-product-name">{{ it.p["nombre"] }}</div>
+                    <div class="cart-product-ref">Ref: {{ it.p["id"] }}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="center">
+                <form method="post" action="{{ url_for('carrito_quitar') }}" class="inline-form">
+                  <input type="hidden" name="producto_id" value="{{ it.p['id'] }}">
+                  <span class="cart-qty">x{{ it.qty }}</span>
+                  <button type="submit" class="btn-remove">Quitar</button>
+                </form>
+              </td>
+              <td class="right cart-subtotal">${{ "%.2f"|format(it.subtotal) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Resumen del pedido -->
+      <div class="stats-panel cart-summary">
+        <h3>Resumen del Pedido</h3>
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>${{ "%.2f"|format(total) }}</span>
+        </div>
+        <div class="summary-total">
+          <span>Total (USD)</span>
+          <span>${{ "%.2f"|format(total) }}</span>
+        </div>
+
+        <form method="post" action="{{ url_for('checkout') }}">
+          <div class="form-group">
+            <label>Nombre de quien recibe</label>
+            <input name="nombre" placeholder="Nombre completo" required>
+          </div>
+          <div class="form-group">
+            <label>Email de contacto</label>
+            <input name="email" type="email" placeholder="ejemplo@email.com">
+          </div>
+          <button class="btn btn-full" type="submit">Confirmar Pedido</button>
+        </form>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

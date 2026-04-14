@@ -1,0 +1,557 @@
+<!-- ============================================================
+  dashboard.html — Panel de control del administrador
+  ============================================================
+  Hereda la estructura de base.html (cabecera, nav, footer).
+  Rellena el bloque "content" con el panel de administración.
+
+  Datos recibidos desde app.py → dashboard():
+    visitas       → lista de rutas visitadas con su conteo
+    productos     → todos los productos del catálogo
+    avisos        → avisos activos publicados en la tienda
+    ventas_hoy    → { total, cantidad_pedidos } del día
+    imagen_subida → ruta de la última imagen subida (o None)
+    imagenes      → archivos en /static/images/
+    pedidos       → todos los pedidos con su estado actual
+  ============================================================ -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+
+  <!-- Encabezado del panel -->
+  <div class="dashboard-header">
+    <h1>Panel de Control</h1>
+    <p>Resumen de actividad y gestión de la tienda.</p>
+  </div>
+
+  <!-- ===== Tarjetas de métricas rápidas =====
+    4 tarjetas con números clave de la tienda en tiempo real.
+    Filtros Jinja2:
+      | sum(attribute='conteo') → suma el campo 'conteo' de cada fila
+      | length                  → cuenta elementos de una lista
+      | format(n)               → formatea un número con 2 decimales
+  -->
+  <div class="stats-grid">
+
+    <!-- Total de visitas registradas en todas las páginas -->
+    <div class="stat-card">
+      <div class="stat-number">{{ visitas | sum(attribute='conteo') }}</div>
+      <div class="stat-label">Visitas Totales</div>
+    </div>
+
+    <!-- Cantidad de productos publicados en el catálogo -->
+    <div class="stat-card">
+      <div class="stat-number">{{ productos | length }}</div>
+      <div class="stat-label">Productos Activos</div>
+    </div>
+
+    <!-- Suma de unidades disponibles en todos los productos -->
+    <div class="stat-card">
+      <div class="stat-number">{{ productos | sum(attribute='stock') }}</div>
+      <div class="stat-label">Unidades en Stock</div>
+    </div>
+
+    <!-- Ventas e ingresos del día actual (tarjeta oscura de acento) -->
+    <div class="stat-card stat-card-accent">
+      <div class="stat-number">${{ "%.2f"|format(ventas_hoy.total) }}</div>
+      <div class="stat-label">Ventas del Día ({{ ventas_hoy.cantidad_pedidos }} pedidos)</div>
+    </div>
+
+  </div>
+
+
+  <!-- ===== Panel: Gestión de Pedidos =====
+    Muestra todos los pedidos con un dropdown para cambiar su estado.
+    Estados posibles:
+      "Esperando pago"     → el cliente aún no ha pagado
+      "En proceso de envío"→ el pago se confirmó y se está preparando
+      "Entregado"          → el cliente recibió su pedido
+      "Cancelado"          → el pedido fue cancelado
+
+    Colores de las etiquetas (badge):
+      Esperando pago      → naranja
+      En proceso de envío → azul
+      Entregado           → verde
+      Cancelado           → rojo
+  -->
+  <div class="stats-panel" style="margin-bottom:1.5rem;">
+    <h2 class="panel-title">📦 Gestión de Pedidos</h2>
+
+    {% if pedidos %}
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Total</th>
+            <th>Fecha</th>
+            <th>Estado actual</th>
+            <th>Cambiar estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in pedidos %}
+          <tr>
+
+            <!-- ID del pedido -->
+            <td class="text-secondary">#{{ p.id }}</td>
+
+            <!-- Nombre del cliente que hizo la compra -->
+            <td style="font-weight:500;">{{ p.cliente_nombre }}</td>
+
+            <!-- Total del pedido con 2 decimales -->
+            <td>${{ "%.2f"|format(p.total) }}</td>
+
+            <!-- Fecha y hora en que se realizó el pedido -->
+            <td style="font-size:.82rem;color:#86868b;">{{ p.creado_en }}</td>
+
+            <!-- Etiqueta visual del estado actual con color según valor -->
+            <td>
+              {% if p.estado == "Entregado" %}
+                <span style="background:#d4edda;color:#155724;padding:.25rem .65rem;border-radius:999px;font-size:.78rem;font-weight:600;">
+                  ✅ Entregado
+                </span>
+              {% elif p.estado == "En proceso de envío" %}
+                <span style="background:#cce5ff;color:#004085;padding:.25rem .65rem;border-radius:999px;font-size:.78rem;font-weight:600;">
+                  🚚 En proceso de envío
+                </span>
+              {% elif p.estado == "Cancelado" %}
+                <span style="background:#f8d7da;color:#721c24;padding:.25rem .65rem;border-radius:999px;font-size:.78rem;font-weight:600;">
+                  ❌ Cancelado
+                </span>
+              {% else %}
+                <span style="background:#fff3cd;color:#856404;padding:.25rem .65rem;border-radius:999px;font-size:.78rem;font-weight:600;">
+                  ⏳ Esperando pago
+                </span>
+              {% endif %}
+            </td>
+
+            <!-- Formulario para cambiar el estado del pedido.
+                 Envía pedido_id + el estado seleccionado al servidor.
+                 "selected" marca automáticamente el estado actual en el dropdown. -->
+            <td>
+              <form action="{{ url_for('actualizar_estado_pedido_route') }}" method="POST"
+                    style="display:flex;gap:.4rem;align-items:center;">
+                <input type="hidden" name="pedido_id" value="{{ p.id }}">
+                <select name="estado" style="padding:.3rem .5rem;border:1px solid #ddd;border-radius:8px;font-size:.83rem;font-family:inherit;">
+                  <option value="Esperando pago"      {% if p.estado == "Esperando pago" %}selected{% endif %}>⏳ Esperando pago</option>
+                  <option value="En proceso de envío" {% if p.estado == "En proceso de envío" %}selected{% endif %}>🚚 En proceso de envío</option>
+                  <option value="Entregado"            {% if p.estado == "Entregado" %}selected{% endif %}>✅ Entregado</option>
+                  <option value="Cancelado"            {% if p.estado == "Cancelado" %}selected{% endif %}>❌ Cancelado</option>
+                </select>
+                <button type="submit" class="btn-sm btn-save">Actualizar</button>
+              </form>
+            </td>
+
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% else %}
+    <!-- Mensaje cuando todavía no hay ningún pedido registrado -->
+    <p class="text-secondary">No hay pedidos registrados aún.</p>
+    {% endif %}
+
+  </div>
+
+
+  <!-- ===== Panel: Gestión de Banners ===== -->
+  <div class="stats-panel" style="margin-bottom:1.5rem;">
+    <h2 class="panel-title">🖼️ Banner del Home</h2>
+
+    <p style="color:#86868b;font-size:.85rem;margin-bottom:.75rem;">
+      <strong>Crear nuevo banner</strong> — aparecerá en la sección promocional de la página principal.
+    </p>
+
+    <form action="{{ url_for('crear_banner') }}" method="POST"
+          class="admin-form" style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.25rem;">
+      <input type="text" name="titulo" placeholder="Título (ej: Cancelación Activa.)" required
+             style="padding:.5rem .75rem;border:1px solid #ddd;border-radius:8px;font-family:inherit;">
+      <input type="text" name="subtitulo" placeholder="Subtítulo (ej: Silencia el mundo...)"
+             style="padding:.5rem .75rem;border:1px solid #ddd;border-radius:8px;font-family:inherit;">
+      <input type="text" name="imagen" placeholder="Ruta de imagen (ej: /static/images/foto.jpg)" required
+             style="padding:.5rem .75rem;border:1px solid #ddd;border-radius:8px;font-family:inherit;">
+      <button type="submit" class="btn" style="align-self:flex-start;">➕ Crear Banner</button>
+    </form>
+
+    {% if banners %}
+    <hr style="border:none;border-top:1px solid #f0f0f0;margin:1rem 0;">
+    <p style="color:#86868b;font-size:.85rem;margin-bottom:.75rem;">
+      <strong>Banners guardados</strong> — el banner activo se muestra en el Home.
+    </p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;">
+      {% for b in banners %}
+      <div style="background:#f9f9f9;border-radius:12px;padding:1rem;position:relative;
+                  {% if b.activo %}border:2px solid #34c759;{% else %}border:1px solid #e5e5e5;{% endif %}">
+        {% if b.activo %}
+        <span style="position:absolute;top:.5rem;right:.5rem;background:#34c759;color:#fff;font-size:.7rem;
+                     padding:.2rem .5rem;border-radius:999px;font-weight:600;">ACTIVO</span>
+        {% endif %}
+        <img src="{{ b.imagen }}" alt="{{ b.titulo }}"
+             style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:.5rem;background:#eee;"
+             onerror="this.onerror=null;this.style.display='none';">
+        <p style="font-weight:600;margin-bottom:.15rem;">{{ b.titulo }}</p>
+        <p style="font-size:.82rem;color:#86868b;margin-bottom:.5rem;">{{ b.subtitulo }}</p>
+        <p style="font-size:.75rem;color:#aaa;margin-bottom:.5rem;">{{ b.imagen }}</p>
+        <div style="display:flex;gap:.5rem;">
+          {% if not b.activo %}
+          <form action="{{ url_for('activar_banner', banner_id=b.id) }}" method="POST">
+            <button type="submit" class="btn-sm btn-save">✅ Activar</button>
+          </form>
+          {% endif %}
+          <form action="{{ url_for('eliminar_banner', banner_id=b.id) }}" method="POST">
+            <button type="submit" class="btn-sm btn-delete">🗑️ Eliminar</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-secondary">No hay banners creados. Crea uno arriba.</p>
+    {% endif %}
+  </div>
+
+
+  <!-- ===== Panel: Gestión de Imágenes =====
+    Permite subir imágenes nuevas, ver las existentes,
+    reemplazarlas (mismo nombre) o eliminarlas del servidor.
+
+    IMPORTANTE sobre eliminar:
+      Al eliminar se borra el archivo del disco Y se actualiza
+      la base de datos: todos los productos que referenciaban
+      esa imagen quedan con imagen='' (sin imagen rota).
+
+    IMPORTANTE sobre reemplazar (🔄):
+      Se sube un nuevo archivo con el MISMO nombre → los productos
+      que la usaban se actualizan automáticamente sin tocar la BD.
+  -->
+  <div class="stats-panel" style="margin-bottom:1.5rem;">
+    <h2 class="panel-title">🖼️ Gestión de Imágenes</h2>
+
+    <!-- Formulario para subir una imagen nueva al servidor.
+         enctype="multipart/form-data" es obligatorio para enviar archivos. -->
+    <p style="color:#86868b;font-size:.85rem;margin-bottom:.5rem;">
+      <strong>Subir nueva imagen</strong> — se guardará en <code>/static/images/</code>
+    </p>
+    <form action="{{ url_for('subir_imagen') }}" method="POST" enctype="multipart/form-data"
+          class="admin-form" style="flex-direction:row;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+      <input type="file" name="imagen" accept="image/*" required style="flex:1;min-width:200px;">
+      <button type="submit" class="btn" style="white-space:nowrap;">⬆️ Subir</button>
+    </form>
+
+    <!-- Mensaje de éxito mostrado solo después de subir una imagen.
+         imagen_subida llega como parámetro GET en la URL. -->
+    {% if imagen_subida %}
+    <div class="alert" style="margin-bottom:1rem;background:#d4edda;color:#155724;border-color:#c3e6cb;">
+      ✅ Imagen guardada en: <code>{{ imagen_subida }}</code>
+      &nbsp;—&nbsp;Copia esta ruta y pégala en el campo "Imagen" del producto.
+    </div>
+    {% endif %}
+
+    <!-- Sección: galería de imágenes existentes en el servidor -->
+    <hr style="border:none;border-top:1px solid #f0f0f0;margin:1rem 0;">
+    <p style="color:#86868b;font-size:.85rem;margin-bottom:.75rem;">
+      <strong>Imágenes en el servidor</strong> — puedes reemplazar o eliminar cada una.
+    </p>
+
+    {% if imagenes %}
+    <!-- Grid responsivo: se ajusta según el ancho de la pantalla -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;">
+
+      {% for img in imagenes %}
+      <!-- Tarjeta por imagen -->
+      <div style="border:1px solid #e8e8ed;border-radius:10px;overflow:hidden;background:#fafafa;">
+
+        <!-- Vista previa de la imagen.
+             onerror: si no carga, muestra el emoji 🖼️ en su lugar. -->
+        <div style="height:120px;background:#f0f0f5;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+          <img src="{{ img.ruta }}" alt="{{ img.filename }}"
+               style="width:100%;height:100%;object-fit:cover;"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <span style="display:none;color:#aaa;font-size:2rem;">🖼️</span>
+        </div>
+
+        <div style="padding:.65rem;">
+
+          <!-- Nombre del archivo -->
+          <p style="font-size:.75rem;color:#555;word-break:break-all;margin-bottom:.5rem;font-weight:500;">
+            {{ img.filename }}
+          </p>
+
+          <!-- Campo de solo lectura con la ruta completa.
+               Al hacer clic se selecciona todo el texto para copiar fácilmente. -->
+          <input type="text" value="{{ img.ruta }}" readonly
+                 id="ruta-{{ loop.index }}"
+                 style="font-size:.7rem;width:100%;padding:.25rem .4rem;border:1px solid #ddd;border-radius:5px;margin-bottom:.5rem;color:#333;"
+                 onclick="this.select();" title="Clic para seleccionar la ruta">
+
+          <!-- Formulario reemplazar: sube un nuevo archivo con el mismo nombre.
+               Los productos que la usaban se actualizan automáticamente. -->
+          <form action="{{ url_for('reemplazar_imagen') }}" method="POST"
+                enctype="multipart/form-data" style="margin-bottom:.4rem;">
+            <input type="hidden" name="filename" value="{{ img.filename }}">
+            <div style="display:flex;gap:.35rem;align-items:center;">
+              <input type="file" name="nueva_imagen" accept="image/*" required
+                     style="font-size:.7rem;flex:1;min-width:0;">
+              <button type="submit" class="btn-sm btn-save" style="white-space:nowrap;"
+                      title="Reemplazar imagen conservando el mismo nombre">🔄</button>
+            </div>
+          </form>
+
+          <!-- Formulario eliminar: borra el archivo del disco Y limpia la BD.
+               confirm() hace que el navegador pida confirmación antes de enviar. -->
+          <form action="{{ url_for('eliminar_imagen') }}" method="POST"
+                onsubmit="return confirm('¿Eliminar {{ img.filename }}?\nTodos los productos que la usen quedarán sin imagen automáticamente.');">
+            <input type="hidden" name="filename" value="{{ img.filename }}">
+            <button type="submit" class="btn-sm btn-danger" style="width:100%;">🗑️ Eliminar</button>
+          </form>
+
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <p style="color:#aaa;font-size:.9rem;">No hay imágenes subidas aún.</p>
+    {% endif %}
+
+  </div>
+
+
+  <!-- ===== Contenido principal: 2 columnas =====
+    Columna izquierda (2/3 del ancho): gráfica de tráfico + inventario.
+    Columna derecha  (1/3 del ancho): formulario nuevo producto + avisos.
+  -->
+  <div class="dashboard-grid">
+
+    <!-- ===== COLUMNA IZQUIERDA ===== -->
+    <div>
+
+      <!-- Gráfica de tráfico
+           Chart.js dibuja aquí las barras con las páginas más visitadas.
+           Los datos (labels y data) se generan en el bloque <script> abajo. -->
+      <div class="stats-panel">
+        <h2 class="panel-title">Analítica de Tráfico</h2>
+        <canvas id="visitasChart" class="chart-canvas"></canvas>
+      </div>
+
+      <!-- Inventario de productos
+           Tabla con los campos editables de cada producto.
+           Cada fila tiene su propio <form> para guardar de forma independiente.
+           Columnas: ID | Nombre | Precio | Stock | Imagen actual | Nueva ruta | Guardar | Eliminar -->
+      <div class="stats-panel">
+        <h2 class="panel-title">Inventario de Audio</h2>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Imagen actual</th>
+                <th>Nueva Imagen (ruta)</th>
+                <th>Guardar</th>
+                <th>Eliminar</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <!-- Itera sobre todos los productos de la BD -->
+              {% for p in productos %}
+              <tr>
+                <td class="text-secondary">#{{ p.id }}</td>
+                <td class="product-name-cell">{{ p.nombre }}</td>
+
+                <!-- Form de actualizar: use display:contents para agrupar las
+                     celdas sin interrumpir el layout de la tabla. -->
+                <form action="{{ url_for('actualizar_producto_route') }}" method="POST"
+                      class="inline-update-form" id="form-prod-{{ p.id }}">
+                  <input type="hidden" name="producto_id" value="{{ p.id }}">
+
+                  <!-- Campo editable: precio con 2 decimales -->
+                  <td>
+                    <input type="number" step="0.01" name="precio"
+                           value="{{ '%.2f'|format(p.precio) }}" class="input-sm">
+                  </td>
+
+                  <!-- Campo editable: unidades disponibles en stock -->
+                  <td>
+                    <input type="number" name="stock"
+                           value="{{ p.stock }}" class="input-sm input-center">
+                  </td>
+
+                  <!-- Miniatura de la imagen actual del producto -->
+                  <td>
+                    {% if p.imagen %}
+                      <img src="{{ p.imagen }}" alt="{{ p.nombre }}"
+                           style="width:48px;height:48px;object-fit:cover;border-radius:6px;vertical-align:middle;">
+                    {% else %}
+                      <span style="color:#aaa;font-size:.8rem;">Sin imagen</span>
+                    {% endif %}
+                  </td>
+
+                  <!-- Campo de texto para escribir/pegar la ruta de la nueva imagen.
+                       También se puede copiar desde el panel de Gestión de Imágenes. -->
+                  <td>
+                    <input type="text" name="imagen" value="{{ p.imagen }}"
+                           class="input-sm input-wide" placeholder="/static/images/...">
+                  </td>
+
+                  <!-- Botón Guardar: envía este form al servidor -->
+                  <td>
+                    <button type="submit" class="btn-sm btn-save">Guardar</button>
+                  </td>
+                </form>
+
+                <!-- Botón Eliminar: form separado para evitar conflicto con Guardar -->
+                <td>
+                  <form action="{{ url_for('eliminar_producto_route', pid=p.id) }}" method="POST"
+                        onsubmit="return confirm('¿Eliminar este producto definitivamente?');"
+                        class="inline-form">
+                    <button type="submit" class="btn-sm btn-danger">Eliminar</button>
+                  </form>
+                </td>
+
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /columna izquierda -->
+
+
+    <!-- ===== COLUMNA DERECHA ===== -->
+    <div>
+
+      <!-- Formulario: agregar un producto nuevo al catálogo.
+           Campos obligatorios: nombre, precio, stock.
+           Imagen: opcionalmente se puede subir un archivo
+                   o escribir la ruta a mano.
+           Si se sube archivo, tiene prioridad sobre la URL de texto. -->
+      <div class="stats-panel">
+        <h2 class="panel-title">Nuevo Producto</h2>
+        <form action="{{ url_for('agregar_producto') }}" method="POST"
+              enctype="multipart/form-data" class="admin-form">
+          <input type="text" name="nombre" placeholder="Nombre del modelo" required>
+          <textarea name="descripcion" placeholder="Descripción breve..." rows="2"></textarea>
+          <div class="form-row">
+            <input type="number" step="0.01" name="precio" placeholder="Precio" required>
+            <input type="number" name="stock" placeholder="Stock" required>
+          </div>
+          <!-- Imagen: opción de archivo (prioridad) o URL de texto -->
+          <label style="font-size:.85rem;color:#86868b;margin-bottom:.25rem;">
+            Imagen del producto (sube un archivo <em>o</em> ingresa la URL):
+          </label>
+          <input type="file" name="imagen_file" accept="image/*" style="margin-bottom:.5rem;">
+          <input type="text" name="imagen" placeholder="/static/images/nombre.jpg (opcional si subes archivo)">
+          <button type="submit" class="btn btn-full">Publicar Producto</button>
+        </form>
+      </div>
+
+      <!-- Formulario: crear un aviso para mostrar en la barra superior de la tienda.
+           Los avisos son visibles para TODOS los usuarios (logueados y no logueados).
+           El admin puede publicar y eliminar avisos desde aquí. -->
+      <div class="stats-panel">
+        <h2 class="panel-title">📢 Crear Aviso</h2>
+        <form action="{{ url_for('crear_aviso') }}" method="POST" class="admin-form">
+          <input type="text" name="titulo" placeholder="Título del aviso" required>
+          <textarea name="mensaje" placeholder="Mensaje para los usuarios..." rows="3" required></textarea>
+          <button type="submit" class="btn btn-full">Publicar Aviso</button>
+        </form>
+      </div>
+
+      <!-- Lista de avisos activos publicados actualmente en la tienda.
+           Si no hay avisos publicados muestra un mensaje informativo. -->
+      <div class="stats-panel">
+        <h2 class="panel-title">Avisos Activos</h2>
+
+        {% if avisos %}
+          {% for aviso in avisos %}
+          <div class="aviso-card">
+            <div class="aviso-card-header">
+              <strong>{{ aviso.titulo }}</strong>
+              <!-- Fecha de creación del aviso, viene de la BD -->
+              <span class="aviso-fecha">{{ aviso.creado_en }}</span>
+            </div>
+            <p class="aviso-mensaje">{{ aviso.mensaje }}</p>
+            <!-- Botón para borrar este aviso de la BD -->
+            <form action="{{ url_for('eliminar_aviso_route', aviso_id=aviso.id) }}"
+                  method="POST" class="inline-form">
+              <button type="submit" class="btn-sm btn-danger">Eliminar Aviso</button>
+            </form>
+          </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-secondary">No hay avisos publicados.</p>
+        {% endif %}
+
+      </div>
+
+    </div><!-- /columna derecha -->
+
+  </div><!-- /dashboard-grid -->
+
+</div><!-- /container -->
+
+
+<!-- ===== Gráfica de tráfico con Chart.js =====
+  Chart.js es una librería JS externa cargada desde un CDN (necesitas internet).
+  Cómo funciona:
+    1. Jinja2 genera los arrays "labels" y "data" como JSON antes de que el
+       navegador ejecute el JS (el servidor rellena los valores reales).
+    2. Chart.js lee esos arrays y dibuja las barras en el <canvas> de arriba.
+
+  labels → rutas visitadas      ej: ["/", "/producto/3", "/carrito"]
+  data   → conteo de visitas    ej: [120, 45, 30]
+-->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Obtener el canvas donde se dibujará la gráfica
+  const ctx = document.getElementById('visitasChart').getContext('2d');
+
+  // Fuente y color global de los textos de la gráfica
+  Chart.defaults.font.family = 'Inter, -apple-system, sans-serif';
+  Chart.defaults.color = '#86868b';
+
+  // Datos generados por Jinja2 (se renderizan en el servidor antes de llegar al navegador)
+  const labels = {{ visitas | map(attribute='ruta') | list | tojson }};
+  const data   = {{ visitas | map(attribute='conteo') | list | tojson }};
+
+  // Crear y configurar la gráfica de barras
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,        // etiquetas del eje X (rutas)
+      datasets: [{
+        label: 'Visitas',
+        data: data,          // valores del eje Y (conteos)
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        borderRadius: 6,     // bordes redondeados en la parte superior de cada barra
+        barThickness: 24,    // ancho fijo de cada barra en píxeles
+      }]
+    },
+    options: {
+      responsive: true,           // se adapta al ancho del contenedor padre
+      maintainAspectRatio: false, // permite controlar la altura desde CSS
+      plugins: { legend: { display: false } }, // ocultar la leyenda (redundante con una sola serie)
+      scales: {
+        y: {
+          beginAtZero: true,  // el eje Y siempre comienza en 0
+          grid: { color: '#f5f5f7', drawBorder: false },
+          ticks: { padding: 10 }
+        },
+        x: {
+          grid: { display: false, drawBorder: false } // sin líneas verticales en el fondo
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}
