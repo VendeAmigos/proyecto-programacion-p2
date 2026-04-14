@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container product-detail-container">
+  <div class="product-detail">
+    <!-- Imagen del producto -->
+    <div class="product-gallery">
+      <img
+        src="{{ p['imagen'] or '/static/images/placeholder.jpg' }}"
+        alt="{{ p['nombre'] }}"
+        onerror="this.onerror=null;this.src='/static/images/placeholder.jpg'"
+      >
+    </div>
+
+    <!-- Información del producto -->
+    <div class="product-info">
+      <p class="product-category">Audio Premium</p>
+      <h1 class="product-title">{{ p["nombre"] }}</h1>
+      <div class="product-price">${{ "%.2f"|format(p["precio"]) }}</div>
+
+      <div class="stock-badge {% if p['stock'] > 0 %}in-stock{% else %}out-of-stock{% endif %}">
+        <span class="stock-dot"></span>
+        {% if p['stock'] > 0 %}
+          Stock disponible: {{ p["stock"] }} unidades
+        {% else %}
+          Agotado
+        {% endif %}
+      </div>
+
+      <p class="product-description">
+        {{ p["descripcion"] or "Experimenta la mejor calidad de sonido con este producto. Diseño acústico de vanguardia." }}
+      </p>
+
+      <form method="post" action="{{ url_for('carrito_agregar') }}" class="product-form">
+        <input type="hidden" name="producto_id" value="{{ p['id'] }}">
+        {% if p['stock'] > 0 %}
+          <input type="number" name="cantidad" min="1" max="{{ p['stock'] }}" value="1" class="qty-input">
+          <button type="submit" class="btn btn-buy">Comprar ahora</button>
+        {% else %}
+          <button type="button" class="btn btn-disabled" disabled>Sin Stock</button>
+        {% endif %}
+      </form>
+
+      <a href="{{ url_for('inicio') }}" class="back-link">← Volver al catálogo</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

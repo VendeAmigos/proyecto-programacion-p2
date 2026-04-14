@@ -1,0 +1,119 @@
+{# ============================================================
+  base.html — Plantilla base de la que heredan TODAS las páginas
+  ============================================================
+  Define la estructura HTML común: head, header, avisos,
+  mensajes flash y footer. Cualquier página que use
+  extends 'base.html' hereda todo esto automáticamente.
+
+  Bloque que otras páginas reemplazan:
+    block content → contenido específico de cada página
+
+  Variables globales disponibles en TODOS los templates
+  (inyectadas por el context_processor de app.py):
+    user            → usuario logueado (o None si no hay sesión)
+    carrito_count   → número de artículos en la bolsa
+    avisos_globales → lista de avisos activos publicados por el admin
+  ============================================================ #}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Audio Minimal — Tienda de audífonos premium" />
+  <title>{{ title or "Audio Minimal" }}</title>
+
+  <!-- Google Fonts: carga la tipografía Inter desde internet.
+       preconnect acelera la conexión antes de que se pida el recurso. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Hojas de estilos propias:
+       normalize.css → iguala estilos entre diferentes navegadores
+       styles.css    → diseño completo de la tienda -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='normalize.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+  <!-- ===== Barra de navegación =====
+    Visible en todas las páginas. Pegada al tope de la pantalla
+    (position: sticky) con efecto de cristal (backdrop-filter: blur).
+
+    Lógica de los enlaces:
+      - Si el usuario ES admin     → muestra "Admin" (enlace al dashboard)
+      - Si el usuario está logueado → muestra "Salir"
+      - Si NO está logueado         → muestra "Cuenta" y "Registrar"
+      - Siempre visibles: "Tienda" y "Bolsa (N)"
+  -->
+  <header class="topbar">
+    <!-- Logo / nombre de la marca, enlaza a la página principal -->
+    <a class="brand" href="{{ url_for('inicio') }}">AUDIO.</a>
+
+    <nav class="nav-links">
+      <a href="{{ url_for('inicio') }}">Tienda</a>
+
+      {% if user %}
+        <!-- Solo los administradores ven el enlace al panel de control -->
+        {% if user.es_admin %}
+          <a href="{{ url_for('dashboard') }}">Admin</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}">Salir</a>
+      {% else %}
+        <!-- Usuarios no logueados ven los enlaces de acceso a su cuenta -->
+        <a href="{{ url_for('login') }}">Cuenta</a>
+        <a href="{{ url_for('registro') }}" class="btn btn-nav">Registrar</a>
+      {% endif %}
+
+      <!-- Bolsa de compras: muestra el número de artículos en el carrito -->
+      <a href="{{ url_for('carrito') }}">Bolsa ({{ carrito_count or 0 }})</a>
+    </nav>
+  </header>
+
+  <!-- ===== Avisos globales =====
+    Barra que aparece debajo del navbar solo si el admin publicó avisos.
+    Los avisos son visibles para todos los usuarios.
+    avisos_globales viene del context_processor de app.py.
+  -->
+  {% if avisos_globales %}
+  <div class="avisos-barra">
+    {% for aviso in avisos_globales %}
+      <div class="aviso-item">
+        <strong>{{ aviso.titulo }}</strong> — {{ aviso.mensaje }}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- ===== Mensajes Flash =====
+    Notificaciones temporales del servidor: "Producto agregado",
+    "Credenciales inválidas", etc. Se generan con flash() en app.py
+    y se consumen aquí una sola vez (desaparecen al recargar).
+  -->
+  <main>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="container flash-container">
+          {% for m in messages %}
+            <div class="alert">{{ m }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- ===== Bloque de contenido =====
+      Cada página hija reemplaza este bloque con su propio HTML.
+      Ejemplos: index.html, dashboard.html, carrito.html, login.html
+    -->
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ===== Footer =====
+    Pie de página con copyright, igual en todas las páginas.
+  -->
+  <footer>
+    <p>&copy; 2026 Audio Minimal Store. Diseñado para puristas del sonido.</p>
+  </footer>
+
+</body>
+</html>
