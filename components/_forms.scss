@@ -1,0 +1,73 @@
+/* ============================================================
+   _forms.scss
+   ============================================================
+   Manejador de todos los estilos para los inputs, labels
+   y campos de formularios, (desde Admin hasta registro).
+============================================================ */
+
+.form-group {
+  margin-bottom: 1.2rem; // Separado con el campo siguiente
+  text-align: left;
+
+  // Un label con aspecto más profesional (mayúsculas, gris oscuro)
+  label {
+    display: block; // Obliga al input a bajar
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);     // Tono neutro gris
+    text-transform: uppercase;        // Da un look elegante
+    letter-spacing: 1px;              // Letras espaciadas
+  }
+}
+
+// Estilo universal de entrada y texto grande
+input, textarea {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border-color);  // Borde muy sutil
+  border-radius: var(--radius);           // Esquinas redondas medianas
+  font-size: 0.95rem;
+  font-family: var(--font);
+  outline: none;                          // Quita el borde azul de los browsers
+  background: var(--surface-color);       // Mantiene el gris claro en estado normal
+  transition: border-color 0.2s, background 0.2s; // Transición rápida al hacer click
+  box-sizing: border-box;
+
+  // Animaciones para focus o tipeo "active"
+  &:focus {
+    border-color: var(--accent-color); // El borde cambia al negro acento global
+    background: #fff;                  // Pinta de blanco la celda
+  }
+}
+
+// Textarea (Para descripcion de productos, dashboard o consultas)
+textarea {
+  resize: vertical;    // Solo dejar engrandar hacia abajo verticalmente (UI más limpia)
+  min-height: 60px;
+}
+
+// Modificadores de inputs pequeños (para el panel admin de precio)
+.input-sm {
+  width: 80px;         // Forzar caja chiquita
+  padding: 0.4rem 0.5rem;
+  font-size: 0.85rem;
+  border-radius: 8px;
+}
+
+// Clases utilitarias por tamaño
+.input-center { text-align: center; width: 60px; } // Útil para stock de inventarios
+.input-wide { width: 100%; min-width: 120px; }
+
+// Para que los inputs se coloquen uno a la izquierda del otro en vez de bajar en bloque
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr; // Columnas 50/50 
+  gap: 0.8rem;
+}
+
+// Margen rápido en panel admin
+.admin-form input,
+.admin-form textarea {
+  margin-bottom: 0.8rem;
+}

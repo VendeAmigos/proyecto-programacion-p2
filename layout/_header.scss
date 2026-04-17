@@ -1,0 +1,80 @@
+/* ============================================================
+   _header.scss
+   ============================================================
+   Manejador de la barra de navegación transparente flotante 
+   (topbar), el logo, el buscador y el banner superior (avisos).
+============================================================ */
+
+// Estructura envolvente
+.topbar {
+  display: flex;
+  justify-content: space-between;  // El Logo a la izq y los enlaces a la der.
+  align-items: center;             // Vertical al medio
+  padding: 0 5%;
+  height: 60px;                    // Altura fija tipo Apple/Nike
+  background: rgba(255, 255, 255, 0.85); // Traslúcida
+  backdrop-filter: blur(20px);     // Efecto cristal/blur sobre los elementos de fondo (MacOS)
+  position: sticky;                // Queda pegada siempre al scrollear
+  top: 0;
+  z-index: 1000;                   // Encima de todo contenido (héroes, productos)
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06); // Raya divisora ínfima
+}
+
+// Logo de la tienda 'Audio Minimal'
+.brand {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;         // Kern más moderno (ajustado)
+}
+
+// Caja de <nav> interior para los Home, Shop, Info...
+.nav-links {
+  display: flex;                   // Todo horizontal
+  align-items: center;
+  gap: 1.8rem;                     // Separación entre enlaces (28.8px)
+  font-size: 0.85rem;              // Pequeño y sofisticado
+  font-weight: 400;
+
+  // Efecto de 'hover dark' por cada ruta
+  a {
+    color: var(--text-secondary);  // Gris inicialmente
+    white-space: nowrap;           // No saltar de linea el carrito
+    
+    // Al posarse sobre ellos
+    &:hover { 
+      color: var(--text-primary); 
+      opacity: 1; 
+    }
+  }
+}
+
+// Enlace especial tipo "Login" o "Registrarse" o Dashboard como botón
+.btn-nav {
+  padding: 0.4rem 1rem !important; // Más achicado para meterlo en la nav
+  font-size: 0.8rem !important;    // Sobreescribe
+}
+
+/* ---------- Avisos globales (La barrita negra de arriba del envíos gratis) ---------- */
+.avisos-barra {
+  background: linear-gradient(135deg, #1d1d1f, #3a3a3c); // Gradiente negro-oxido metal
+  color: #f5f5f7;
+  padding: 0.6rem 5%;
+  font-size: 0.85rem;              // Letrita muy peque
+  display: flex;
+  flex-wrap: wrap;                 // En móviles que se vaya para abajo sin desbordar
+  gap: 1.5rem;                     // Espaciado del descuento y envio
+  justify-content: center;         // Centrado siempre
+  align-items: center;
+}
+
+// Envase que trae 'Envios gratis', y la de 'Oferta temporal'
+.aviso-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;                     // Separación del Icon y Texto
+
+  // Letra remarcada amarilla 'HOY' o 'GRATIS'
+  strong {
+    color: var(--warning-color);
+  }
+}

@@ -1,0 +1,100 @@
+/* ============================================================
+   _cart.scss (Anteriormente _carrito)
+   ============================================================
+   Manejador de la interfaz de usuario para el Carrito. 
+   Incluye estados vacíos, tabla de items, y subtotal.
+============================================================ */
+
+/* Estado vacío del carrito (Empty state) */
+.empty-cart {
+  padding: 4rem;                    // Mucho aire para que no se vea una caja inerte vacía fea.
+  max-width: 600px;
+  margin: 0 auto;                   // Al medio total
+  border: 1px dashed var(--border-color); // Las líneas "cortadas/punteadas" (Como un placeholder arrastrable en Photoshop = "Súbeme cosas aquí")
+  border-radius: var(--radius-lg);  // Esquinas grandes de contenedor gris
+  text-align: center;
+  
+  // Icono o texto de "Carrito triste" etc ...
+  p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+  }
+}
+
+/* Base de página carrito = 2 columnas (Tabla del carrito | Resumen) */
+.cart-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;   // Asigna dos veces el ancho de tabla al pagar, y solo el de sumar el 1 (Resumen a la extrema derecha)
+  gap: 2rem;                        // Separador central (32px de blanco que une tabla con sumatorias del precio).
+}
+
+/* Modificamos el bloque panel normal pero le quitamos el padding, se lo damos interior por las filas "tr td" para lucir en limpio y border-less */
+.cart-table-panel { 
+  padding: 0;                       // Que la lista empiece al filo con las otras cajas 
+}
+
+/* Agrupador de foto miniatura (thumbnail), del nombre y del ref ID o link interno de click de carrito */
+.cart-product {
+  display: flex;
+  align-items: center;
+  gap: 1rem;                        // Separo foto de los títulos
+  padding-left: 1rem;               // Distanciador izquierdo (Que ninguna foto se monte en el borde)
+}
+
+/* La imagen cuadradita chiquita al costado izquierdo de tus productos elegidos en carrito */
+.cart-thumb {
+  width: 50px;
+  height: 50px;                     // Imagen a escala real cortada miniatura perfecta en la web
+  object-fit: contain;              
+  border-radius: 8px;               // Más suave, cuadrado muy leve
+  background: var(--surface-color); // El gris fondo falso otra vez ("Blend" en PNG)
+}
+
+// Resaltadores en filas o listas densas
+.cart-product-name { 
+  font-weight: 600;                 // Muy remarcado respecto de todo p/ej 2 audifonos 
+}
+.cart-product-ref  { 
+  font-size: 0.8rem;                
+  color: var(--text-secondary);     // Tono discreto gris
+}
+
+/* Botón Input Cantidad Modificada del carrito - A la Derecha del número + y el - del inventario, y separador si fuera a verse o modificable desde la tabla "cart" */
+.cart-qty {
+  font-weight: 600;
+  margin-right: 0.5rem;             // Aleja o separa del precio individual final
+}
+
+/* Precio multiplicado al final a la absoluta derecha de esa fila concreta del producto en el coche. p. ej: "Auricular * 2 = 600$" */
+.cart-subtotal {
+  font-weight: 500;                 // Letra ligeramente llamativa
+  padding-right: 2rem !important;   // El hueco enorme hasta el botón eliminar "X roja de basura" (Importantísimo o quedará feo todo empalmado).
+}
+
+/* La pequeña tarjeta derecha de "Resumen de Compra" / Sumas de dinero en carrito */
+.cart-summary {
+  h3 {
+    margin-top: 0;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;          // Aleja el texto de sumar (Subtotal: --- )
+  }
+}
+
+// Renglón p/ej:  'Subtotal'  $300 
+.summary-row {
+  display: flex;
+  justify-content: space-between;   // A la izquierda título (Texto fijo), a derecha su valor monetario total
+  margin-bottom: 1rem;
+  font-size: 0.95rem;               // Compactito y limpio 
+}
+
+// Renglón final de TOTAL con impuestos ya cobrados.
+.summary-total {
+  display: flex;
+  justify-content: space-between;   // Igual lógica, tirado uno cada extremo de flex 
+  margin-bottom: 2rem;
+  font-weight: 700;                 // Súper grueso, es el "Pagar X"
+  font-size: 1.1rem;                // Mayor peso 
+  padding-top: 1rem;                // Respira por la raya divisoria (16px) superior a separar subtotal con envios por ej 
+  border-top: 1px solid var(--border-color); // Exactamente esta línea para suma total 
+}

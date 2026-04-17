@@ -1,0 +1,83 @@
+/* ============================================================
+   _cards.scss
+   ============================================================
+   Manejador de los estilos para las tarjetas de cada producto 
+   visto en index, o los ítems y contenedores repetitivos. 
+============================================================ */
+
+// Grilla que enlista todo el inventario o la tienda
+.grid {
+  display: grid;
+  // Se adapta autómaticamente entre móvil y compu
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2.5rem; // Excelente respiración (40px)
+}
+
+/* Tarjetón de cada modelo/artículo para la Home */
+.card {
+  background: #fff;
+  transition: transform var(--transition), box-shadow var(--transition);
+  display: flex;
+  flex-direction: column;           // Foto arriba, texto abajo, boton abajo
+  align-items: center;              // Centrado de título
+  text-align: center;
+  padding: 2rem;                    // Borde hacia el contenido
+  border-radius: var(--radius-lg);  // Esquinas redondeadas prominentes
+
+  // Interacción que hace la tienda verse 'cara' / premium
+  &:hover {
+    transform: scale(1.02);         // Flota el bloque un pelo
+    box-shadow: var(--shadow-lg);   // Lanza una sombra oscura enorme
+
+    // Que la foto de los cascos o AirPods salga un poco hacia ti
+    .card-image-container img {
+      transform: scale(1.1);
+    }
+  }
+
+  // Título "AirPods Max...", "Sony..." (Corto)
+  h3 {
+    font-size: 1.4rem;
+    margin: 0.5rem 0;
+    font-weight: 600;
+    letter-spacing: -0.01em;        // Fuente Inter apretada
+  }
+}
+
+// Marco que sujeta la imagen del producto
+.card-image-container {
+  width: 100%;
+  aspect-ratio: 1/1;                // Obliga a que sea cuadrado perfecto siempre (importante)
+  margin-bottom: 1.5rem;            // Separador con el nombre
+  display: flex;
+  align-items: center;              // Posiciona el cable o foto en el muy medio
+  justify-content: center;
+  background: var(--surface-color); // El gris claro Apple donde resalta la sombra
+  border-radius: var(--radius);     // Radio interno de la foto
+  overflow: hidden;                 // Para no salir la foto en el hover
+
+  // Manejo del SRC (foto base de datos)
+  img {
+    max-width: 80%;                 // Nunca chocar a los bordes
+    max-height: 80%;                
+    object-fit: contain;            // Encajar sin deformar (vital en ecommerce)
+    transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1); // Hover super limpio y físico
+  }
+}
+
+// Precio en catálogo
+.price {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+// Los botones "Ver Detalle" - "Comprar ahora" ubicados abajo al fondo (por el flex)
+.card-actions {
+  display: flex;
+  gap: 0.6rem;                      // Entre si, poco separados
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;                 // Estiramiento "footer" de la tarjetita
+}

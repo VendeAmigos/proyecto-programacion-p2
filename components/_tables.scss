@@ -1,0 +1,63 @@
+/* ============================================================
+   _tables.scss
+   ============================================================
+   Manejador de todos los estilos de las tablas, (pedidos, 
+   resumen de compra, editar inventario en /dashboard)  
+============================================================ */
+
+// Contenedor general en teléfonos para que deslice lateral
+.table-scroll { 
+  overflow-x: auto;  // Permite swipe lateral en pantallas estrechas (scroll horizontal del movil)
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse; // Evita doble borde CSS feo
+}
+
+// Aspecto de la cabecera (Titles de columnas, p/ej: Producto, Precio)
+th {
+  text-align: left;           // A la izq para texto (Mejor legibilidad)
+  padding: 0.8rem 0.8rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary); // Gris clarito para no destacar más que la data
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;  // Todo minúsuclas forzado a upper para más pro
+  letter-spacing: 0.05em;      
+  white-space: nowrap;        // Evita saltos de línea incontrolables con palabras largas
+}
+
+// Cajas de data pura
+td {
+  padding: 0.8rem;
+  border-bottom: 1px solid var(--surface-color); // Las líneas entre inventario
+  font-size: 0.9rem;
+  vertical-align: middle;     // Centrado del alto para que botones encajen visualmente bien con imágenes
+}
+
+tr:last-child td { border-bottom: none; } // El último registro no necesita línea de abajo
+
+// Clases utilidades
+.text-secondary { color: var(--text-secondary); }
+.center { text-align: center; } // Modificante para las cabeceras de números/precio
+.right  { text-align: right; }  // Modificadores de botones como editar / eliminar, al extremo derecho
+
+// Limite al título del producto para evitar que una descripción estúpida rompa la celda
+.product-name-cell {
+  font-weight: 500;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;    // Pone ... al final si rebasa 150px
+  white-space: nowrap;
+}
+
+// Zona final al fondo para "Añadir a inventario", "Eliminar del carro"
+.action-btns {
+  display: flex;              // En fila, de izquierda a derecha. Espaciadito con gap
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.inline-form { display: inline; margin: 0; } // Flask necesita el token form dentro del botón Eliminar, lo comprimimos
+.inline-update-form { display: contents; }   // Quita estilos de display innecesarios

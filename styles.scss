@@ -1,0 +1,64 @@
+/* ============================================================
+   styles.scss
+   ============================================================
+   Archivo maestro que une ("compila") todos los módulos de 
+   SASS creados en la estructura "7-1 Pattern" adaptada.
+
+   La compilación lee esto de arriba a abajo. (Orden crucial).
+============================================================ */
+
+/* 1. Abstracts (Variables sin generar CSS directo) */
+@import 'abstracts/variables';
+
+/* 2. Base (Reset y estilos aplicados a tags globales html, body, a) */
+@import 'base/base';
+
+/* 3. Componentes Repetibles (Botones, formularios, alertas, tablas) */
+@import 'components/buttons';
+@import 'components/forms';
+@import 'components/alerts';
+@import 'components/tables';
+@import 'components/cards';
+
+/* 4. Layout / Estructura Macros (Cosas fijas en cada página) */
+@import 'layout/header';
+@import 'layout/footer';
+
+/* 5. Pages / Vistas Específicas (Cada hoja particular de la app) */
+@import 'pages/home';       // Hero principal web
+@import 'pages/product';    // Galería individual
+@import 'pages/cart';       // Tabla carrito 
+@import 'pages/checkout';   // Éxito gigante "Ok"
+@import 'pages/auth';       // Cajitas blancas de Log in Centrado
+@import 'pages/dashboard';  // Configuración y paneles visuales de KPIs admin
+
+/* 6. Media Queries (Responsividad y Mobile - Reglas globales finales) */
+
+// Pequeñas reglas responsivas agrupadas al final (Se puede poner en un subarchivo /base/ o /layout/ _responsive)
+@media (max-width: 1024px) {
+  // Cuando usamos iPad/Tablets aprieta columnas administrativas de KPIs
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  // Móviles en horizontal o tablets chicas: Todo a una columa.
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .cart-layout    { grid-template-columns: 1fr; }
+  
+  // El detalle del audífono en teléfono ocupa toda la pantalla.
+  .product-detail { 
+    grid-template-columns: 1fr !important; 
+    gap: 2rem !important; 
+    padding: 2rem !important; 
+  }
+  
+  // Achicar links de navbar y columnas admin
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .nav-links  { gap: 1rem; font-size: 0.8rem; }
+}
+
+@media (max-width: 480px) {
+  // Teléfonos antiguos / estrechos verticales
+  .stats-grid { grid-template-columns: 1fr; }   // 1 métrica por fila max
+  .hero h1   { font-size: 2.5rem; }             // Baja de tamaño "Audio Puro"
+}

@@ -1,0 +1,132 @@
+/* ============================================================
+   _buttons.scss
+   ============================================================
+   Manejador de todos los estilos para los botones (<button>, a.btn...)
+============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-color); // Botón negro como color primario
+  color: #fff;                     // Texto blanco
+  padding: 0.8rem 2rem;            // Padding base del botón
+  border-radius: var(--radius-pill); // Forma pastilla (rounded-full)
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;                 // Que parezca clickeable
+  transition: all var(--transition);
+  font-family: var(--font);        // Mantener la tipografía del root
+
+  &:hover {
+    opacity: 0.85;                 // Transición transparente en hover
+    transform: translateY(-2px);   // Pequeño salto vertical al pasar el ratón (efecto flotar)
+  }
+}
+
+// Botones secundarios (borde coloreado y fondo blanco hasta hacer hover)
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--text-primary);
+  color: var(--text-primary);
+  
+  &:hover {
+    background: var(--text-primary);
+    color: #fff;
+    opacity: 1;                    // Ignora transparentes oscuros
+  }
+}
+
+// Ocupa al 100% de la caja de arriba (útil en detalles o carritos móviles)
+.btn-full {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+// Botón tamaño 'small' para uso frecuente en listas (admin/dashboard) o productos
+.btn-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.8rem;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font);
+  font-weight: 500;
+  transition: all var(--transition);
+}
+
+// Tipos contextuales
+.btn-save {
+  background: var(--accent-color);
+  color: #fff;
+  &:hover { opacity: 0.8; }
+}
+
+.btn-delete {
+  background: transparent;
+  border: 1px solid var(--danger-color);
+  color: var(--danger-color);
+  &:hover {
+    background: var(--danger-color);
+    color: #fff;
+  }
+}
+
+// Botón rojo puro o contorno en zonas de peligro puro (cancelar, o cerrar sesión)
+.btn-danger {
+  background: transparent;
+  border: 1px solid var(--danger-color);
+  color: var(--danger-color);
+  &:hover {
+    background: var(--danger-color);
+    color: #fff;
+  }
+}
+
+// Remover un producto (botón súper sutil, es como un link) del carrito
+.btn-remove {
+  background: none;
+  border: none;
+  color: var(--danger-color);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: var(--font);
+}
+
+// Estados inactivos/bloqueados
+.btn-disabled {
+  background: var(--border-color) !important;
+  color: var(--text-secondary) !important;
+  cursor: not-allowed !important;    // Cursor de "no permitido"
+}
+
+// Botones con Iconos <svg> para UI amigable
+.btn-icon {
+  gap: 0.45rem; // Separador entre SVG y texto span
+
+  svg {
+    width: 0.95rem;     // Tamaño del ícono a fuego
+    height: 0.95rem;
+    fill: currentColor; // Pinta el SVG del mismo color que el texto del botón (genial para evitar definir hex color al tag svg)
+    flex: 0 0 auto;
+  }
+  
+  span {
+    line-height: 1;
+  }
+}
+
+.btn-compact {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.btn-icon-compact {
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+  white-space: nowrap; // Evita que se quiebre en botones estrechos
+}
