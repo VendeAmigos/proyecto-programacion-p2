@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-wrapper checkout-success">
+  <div class="auth-box">
+    <div class="success-icon">🎉</div>
+    <h2>¡Pedido Confirmado!</h2>
+    <p class="auth-subtitle">
+      Gracias por tu compra. Tu número de pedido es <strong>#{{ pedido_id }}</strong>.
+    </p>
+    <div class="success-info">
+      <p>Hemos enviado un correo de confirmación (simulado). Tus productos llegarán pronto.</p>
+    </div>
+    <a href="{{ url_for('inicio') }}" class="btn">Volver a la tienda</a>
+  </div>
+</div>
+{% endblock %}
