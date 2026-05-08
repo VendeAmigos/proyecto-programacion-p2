@@ -1,0 +1,13 @@
+{
+  "name": "proyecto-programacion-p2",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "sass:build": "sass static/scss/styles.scss static/styles.css",
+    "sass:watch": "sass --watch static/scss/styles.scss:static/styles.css",
+    "sass:build:compressed": "sass --style=compressed static/scss/styles.scss static/styles.css"
+  },
+  "devDependencies": {
+    "sass": "^1.77.8"
+  }
+}
