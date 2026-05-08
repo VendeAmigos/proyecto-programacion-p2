@@ -1,0 +1,51 @@
+/* ============================================================
+   _auth.scss
+   ============================================================
+   Manejador de los estilos para el Login y Registro (Acceso 
+   de usuarios y administrador).
+============================================================ */
+
+/* Envoltorio principal que ocupa casi toda la altura para 
+   centrar la cajita de login perfectamente en medio del monitor. */
+.auth-wrapper {
+  min-height: 80vh;                 // Garantiza que la caja blanca flote sobre el fondo
+  display: flex;                    // Layout flex para centrar caja de forma fácil
+  align-items: center;              // Horizontalmente
+  justify-content: center;          // Verticalmente
+  background: var(--surface-color); // Se ve mejor sobre gris que si pusiéramos blanco general
+}
+
+/* La tarjeta/caja blanca con la form adentro (Ingresar / Login) */
+.auth-box {
+  background: #fff;                 // Fondo principal contrastante de la sombra negra hover global
+  padding: 3rem;                    // Gran relleno para lucir un layout Apple (mucho margen 48px)
+  border-radius: 24px;              // Formato 'tarjeta de crédito' redondeada ultra moderna iOS
+  width: 100%;                      // Adaptabilidad 100%
+  max-width: 420px;                 // No deje que la entrada estire más de este límite. (420px ideal celular/web)
+  box-shadow: var(--shadow);        // Flote la caja blanca al gris de atrás (Profundidad).
+  text-align: center;               // Los H1, h2, "Bienvenido", al medio general de la tarjeta
+
+  // Titular grande ("Iniciar sesión", etc.)
+  h2 {
+    font-size: 2rem;                // Destaca el paso 
+    margin-bottom: 0.5rem;          // Dejarle 8-10px hasta "p.auth-subtitle"
+  }
+}
+
+/* El texto debajo de "Bienvenido" p.ej: "Ingresa tus datos..." */
+.auth-subtitle {
+  color: var(--text-secondary);     // Tono neutro gris pálido para no ser tan agresivo a la vista
+  margin-bottom: 2rem;              // Gran respiro enorme con los primeros 'Inputs' de la form 
+}
+
+/* Enlaces como "¿No tienes cuenta? Regístrate gratis" */
+.auth-link {
+  margin-top: 2rem;                 // Lejos al final del 'submit button login' 
+  font-size: 0.9rem;                // Reducido a modo "hint" / ayuda de texto
+  
+  // Tag <a> para que parezca botón natural de la app.
+  a {
+    color: var(--text-primary);     // Color activo texto real normal //
+    font-weight: 600;               // "bold" en el enlace (Registrar). Llamada a la acción pura para retener users //
+  }
+}

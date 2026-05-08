@@ -1,0 +1,15 @@
+/* ============================================================
+   _footer.scss
+   ============================================================
+   Manejador de los estilos al final de la página (Pie)
+============================================================ */
+
+// Estiliza la etiqueta <footer> (al final de base.html)
+footer {
+  background: var(--surface-color);          // Fondo gris sutil para diferenciar de zona blanca
+  padding: 4rem 5%;                          // Generoso espacio interno (64px arriba/abajo)
+  text-align: center;                        // Créditos de la tienda centrados
+  font-size: 0.8rem;                         // Tipografía discreta "Copyright", "Hecho por"
+  color: var(--text-secondary);              // Gris por lo mismo, sin ser foco
+  border-top: 1px solid var(--border-color); // Línea fina que la separa visualmente del catálogo
+}

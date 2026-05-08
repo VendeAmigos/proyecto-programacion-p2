@@ -1,0 +1,88 @@
+/* ============================================================
+   _home.scss (Anteriormente _index)
+   ============================================================
+   Manejador de los estilos específicos y únicos para la página
+   de inicio (index.html), como el Hero Banner "Audio Puro".
+============================================================ */
+
+/* ---------- Hero (Portada principal negra de la web) ---------- */
+.hero {
+  height: 85vh;                       // Ocupa un 85% de la pantalla
+  background: #000;                   // Fondo puro y absoluto (Para contraste)
+  color: #ffffff;
+  display: flex;                      // Alineamos textos centralizados
+  flex-direction: column;             // El titular "Audio Puro", abajo la descripcion y luego los botones "Descubrir/Ingresar"
+  justify-content: center;            
+  align-items: center;
+  text-align: center;
+  padding: 2rem;                      // Evita golpes en teléfonos o tablets chicos
+  overflow: hidden;                   // Si hay ondas/loops no desborden la caja.
+  
+  // Título monumental (Ej: "Música, elevado.")
+  h1 {
+    font-size: clamp(3rem, 8vw, 5rem); // "clamp" es lo mejor: mínimo 3, flexible con viewWidth, tope 5rem (hace responsive automático y brillante).
+    font-weight: 700;                 // Letra atrevida  
+    letter-spacing: -0.03em;          // Más pegadas las letras gigantes
+    margin: 0 0 1rem;                 // Separado de la descripción 'p' con 16px
+    background: linear-gradient(180deg, #fff, #666); // Degradado del texto
+    -webkit-background-clip: text;    // Famoso hack Apple, fondo metálico dentro de las fuentes.
+    -webkit-text-fill-color: transparent; 
+  }
+
+  // Descripción (Subtítulo en la portada negra)
+  p {
+    font-size: clamp(1.2rem, 3vw, 1.8rem);  // Igual comportamiento adaptativo y muy bonito
+    font-weight: 400;                 // Fino 
+    color: #a1a1a6;                   // Típico gris que no cansa en oscuro 
+    max-width: 600px;                 // No dejar que la línea mida todo el monitor (muy difícil leer)
+    margin-bottom: 3rem;              // Distanciador a la parte inferior de acciones
+  }
+}
+
+/* ---------- Banner promocional inferiror (Antes de grid) ---------- */
+.promo-banner {
+  position: relative;                 // Capa obligada para un ::before o pseudo dark
+  width: 100%;
+  min-height: 400px;                  // Como un rectángulo acostado gigante (Parallax o imagen publicitaria de tienda)
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 0;                          
+  padding: 6rem 5%;                   // Relleno abundante de impacto (100px/96px verticales)
+  background-size: cover;             // Foto de los audifonos se expande al maximo container
+  background-position: center;        
+  background-repeat: no-repeat;       // No un pattern 
+
+  // Pseudo elemento que atenúa o le tira una neblina a la foto
+  // (Así la letra encima blanca siempre puede leerse al 100%)
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;                         // Es top, left, bottom, right a 0, expande el before negro a todo el div
+    background: rgba(0, 0, 0, 0.45);  // Opacidad (45% negro traslucido)
+  }
+
+  /* Los textos z-index arriba */
+  h2 {
+    position: relative;               // Lo zafa de la capa negra del pseudo "before"
+    font-size: clamp(2rem, 5vw, 3.5rem); // Adapta
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+
+  p {
+    position: relative;               // Superposición limpia 
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.85); // Menos deslumbrante blanco (casi gris)
+    max-width: 600px;
+    margin: 0 auto;                   // Centrado total
+  }
+}
+
+// Imagen promocional incrustada ocultar a menos que haya promo img con logica JS/HTML diferente.
+.promo-img {
+  display: none;
+}

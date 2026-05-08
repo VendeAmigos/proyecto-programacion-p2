@@ -1,0 +1,24 @@
+/* ============================================================
+   _alerts.scss
+   ============================================================
+   Manejador de avisos del sistema, pop-ups y flash messages 
+   de Flask. (Tanto errores como aciertos de validación).
+============================================================ */
+
+// Alerta genérica roja (Fallo inicio de sesión o "Agrega algo al carro", etc.)
+.alert {
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid var(--danger-color); // Borde rojo por defecto a lo macOS
+  color: var(--danger-color);            // Texto igual (color rojo error)
+  border-radius: var(--radius);          // Redondeo de 12px
+  margin-bottom: 1rem;
+  font-size: 0.9rem;                     // Tamaño de fuente compacto
+}
+
+// Alerta genérica verde (Éxito al añadir, se actualizó la tienda...)
+.alert-success {
+  background: #d4edda;                   // Fondo verde lima sutil (alerta bootstrap)
+  color: #155724;                        // Letra oscura verde muy oscura para leer claro
+  border-color: #c3e6cb;                 // Borde casi sin notar
+}

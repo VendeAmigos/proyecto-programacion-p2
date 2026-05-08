@@ -1,0 +1,66 @@
+/* ============================================================
+   _base.scss
+   ============================================================
+   Define el reset universal y el estilo global (body, links)
+============================================================ */
+
+// Box-sizing global para evitar que padding/borders sumen al width
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden; // Previene scroll horizontal / "borde blanco a la derecha"
+}
+
+// Reset general del cuerpo para que no haya márgenes no deseados
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color); // Aplicamos la variable del fondo blanco
+
+  color: var(--text-primary);        // Texto general negro/gris oscuro
+  font-family: var(--font);          // Fuente sans-serif de la variable
+  line-height: 1.5;                  // Espaciado entre líneas estándar global
+  -webkit-font-smoothing: antialiased; // Mejora el renderizado de la tipografía
+}
+
+// Estilo universal para todos los enlaces (<a href="...">)
+a {
+  color: inherit;                    // Evita el azul por defecto de los links, toma el color del padre
+  text-decoration: none;             // Quita el subrayado
+  transition: opacity var(--transition); // Transición suave al hacer hover
+  
+  &:hover {
+    opacity: 0.7;                    // Al posar el mouse, hace un pequeño efecto transparente
+  }
+}
+
+// Imágenes responsive por defecto (no rompen el contenedor padre)
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Contenedor macro para limitar el ancho y centrar contenido en monitores muy grandes */
+.container {
+  max-width: 1400px;
+  margin: 4rem auto; // Margen superior e inferior para respirar espacio, auto para centrar horizontalmente
+  padding: 0 5%;     // Padding para que en móviles no pegue el contenido al extremo de la pantalla
+}
+
+// Contenedores menores o flashes informativos
+.flash-container {
+  margin-top: 1rem;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+// Títulos genéricos que aplican de forma repetida en apartados clave del layout principal
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 3rem;
+  text-align: center;
+  letter-spacing: -0.02em;
+}

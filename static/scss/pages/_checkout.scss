@@ -1,0 +1,33 @@
+/* ============================================================
+   _checkout.scss
+   ============================================================
+   Manejador de los estilos para la página o notificación de 
+   "Compra Éxito" u orden generada. 
+============================================================ */
+
+/* Pantalla completa dedicada al éxito del pago, un container alto (50% VH) */
+.checkout-success { 
+  min-height: 50vh;                 // Asegura que no se pegue el footer al botón o icono
+}
+
+/* El círculo o la manita de Check verde grande como confirmación (+50px) */
+.success-icon {
+  font-size: 3rem;                  // Super gigante y hermoso en web
+  margin-bottom: 1rem;              // Aire con el h1 de "¡Hecho!" abajo
+}
+
+/* Contendedor gris suave (tipo recibo, invoice o cajita ticket) debajo de "Pago confirmado" p. ej. "Tú id de compra: xyzk" */
+.success-info {
+  background: var(--surface-color); // El gris clásico de Mac para no hacer fondo aburrido ni blanco ni oscuro total
+  padding: 1.5rem;                  // Espaciado uniforme para lucir como etiqueta física (recibo) 
+  border-radius: var(--radius);     // 12px redondeo Apple clásico
+  margin-bottom: 2rem;              // Aire bajo la info hasta los botones 
+  text-align: left;                 // Alinear todo siempre a la izquierda ("Ticket de caja")
+  
+  // Parrafitos pequeños informativos grises de tu recibo
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);   // Letra que no choca (suavidad de UI para info detallada de ticket).
+  }
+}

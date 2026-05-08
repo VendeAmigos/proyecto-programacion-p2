@@ -1,0 +1,145 @@
+/* ============================================================
+   _product.scss (Anteriormente _producto)
+   ============================================================
+   Manejador de los estilos de la vista individual de un
+   producto (producto.html). Galería + Info principal. 
+============================================================ */
+
+/* Envolvente individual, más estrecho que un index / layout de 1400.
+   Hace que se vea sofisticado no rellenar toda la pantalla a los bordes. */
+.product-detail-container {
+  max-width: 1100px;
+  padding: 4rem 5%; // Abajo y arriba respiro, porcentaje para móviles.
+}
+
+/* El bloque contenedor Flex/Grid para la foto (izq) y la info (der) */
+.product-detail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;   // Dos columnas iguales 50/50 exactas de ancho.
+  gap: 4rem;                        // Una barbaridad de separación entre la galería y tu botón de pago
+  align-items: center;              // Que el texto no flote hasta arriba si la imagen es alta
+  background: #fff;                 
+  padding: 3rem;                    // Gran espacio interno blanco 
+  border-radius: 24px;              // Curvas "smooth" Apple (Grandes)
+  box-shadow: var(--shadow);        // Sombra de fondo neutra
+}
+
+/* Galería (Bajo el diseño base sería una foto pero esta permite el gris suave de fondo) */
+.product-gallery {
+  background: var(--surface-color); // Resalta increíble fotos transparentes
+  border-radius: var(--radius-lg);  // Esquinas
+  padding: 3rem;                    // Alejado de los bordes 
+  display: flex;                    
+  justify-content: center;          
+  align-items: center;              // Vertical centro total
+  aspect-ratio: 1/1;                // De nuevo cuadrado forzado (1:1), siempre bonito.
+
+  img {
+    width: 100%;                    // Llénate sin rebasar padding (caja padre)
+    max-height: 400px;              // Tampoco de largo desfigures la página (Top en un M2 o Mac)
+    object-fit: contain;            
+    mix-blend-mode: darken;         // Súper truco: si tu PGN trae fondo blanco, se funde con el gris de la web como magia pura. (Photoshop layer blending HTML5)
+  }
+}
+
+/* Panel derecho (Descripción, Título Audífonos, Precio...) */
+.product-info {
+  display: flex;
+  flex-direction: column;           // Se alinea vertical la información
+  justify-content: center;          // Si es menos, se pone en el medio total.
+}
+
+/* "Auriculares Inalámbricos" o "Electrónica" justo arriba (subtítulo de contexto/breadcrumb visual) */
+.product-category {
+  color: var(--text-secondary);     // Típico gris clarito "Audiophile > Bluetooth"
+  text-transform: uppercase;        
+  letter-spacing: 0.1em;            // El doble de separado el letter para sentirse "Editorial" / Vogue / Revistas fashion
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;            // Alejado del h1 (título real del aparato)
+}
+
+/* Nombre real 'Sony WH-1000XM5' */
+.product-title {
+  font-size: clamp(2rem, 5vw, 3.5rem); // Abrazador y gigante
+  letter-spacing: -0.03em;          // Junte de Apple en las "A M X".
+  margin: 0 0 1rem;                 
+  line-height: 1.1;                 // Como no hay descripcion que ahogar el título puede pegar sus renglones si rompe en mobile
+}
+
+/* Precio destacado gigante a la izq del añadir */
+.product-price {
+  font-size: 2.2rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;            // Margen generoso bajo él.
+}
+
+/* ----------- La Pastillita de "En Stock" o "Sin Stock" ----------- */
+// En lugar de texto plano con 'span' soso.
+.stock-badge {
+  display: inline-flex;             // Justo al largo de las palabras "En stock" nada más largo.
+  align-items: center;
+  gap: 0.5rem;                      // Con el puntito al lado
+  background: var(--surface-color); // Gris suave
+  padding: 0.5rem 1rem;             // 8px arriba/16px a los lados
+  border-radius: var(--radius-pill); // Circular forma de píldora UI moderna
+  width: fit-content;               
+  font-size: 0.9rem;                // Texto equilibrado
+  font-weight: 500;                 // Semibold discreto
+  margin-bottom: 2rem;              // Alejado sobre el primer párrafo real descriptivo.
+}
+
+// El punto redondo indicador de Stock.
+.stock-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;               // Absolutamente circular geométrico
+}
+
+// Las clases lógicas para cambiar que pinta Python Jinja (if > 0 --> in-stock)
+.in-stock .stock-dot  { background: var(--success-color); }  // Verde
+.out-of-stock .stock-dot { background: var(--danger-color); } // Rojo puro
+
+/* Párrafo descriptivo (Las maravillas del producto y su audio) */
+.product-description {
+  font-size: 1.1rem;                // Letra mayor que un p habitual para no forzar los ojos. (UX/UI Best practices ecommerce de Lujo)
+  color: var(--text-secondary);     
+  line-height: 1.6;                 // Espacio aireado perfecto para lectura
+  margin-bottom: 2.5rem;            // El Input Number abajo (Para que clickee fácil sin fallar en celulares)
+}
+
+/* El bloque de input "Cantidad" + botón gordo comprar */
+.product-form {
+  display: flex;                    // Horizontal (Input-Izq ; Añadir al carro der)
+  gap: 1rem;                        // Separador 16px (vital en dedos)
+  align-items: center;              // Que el input 3 cuadre bien de la forma del boton
+}
+
+/* La casilla de números modificada con estiletes forzados para ser como boton gordo */
+.qty-input {
+  width: 80px !important;           // Ancho pequeño fijo para no parecer un input de mail.
+  text-align: center;               // Numero "1" al centro (Hermoso diseño, nada de float left).
+  padding: 0.9rem !important;       // Grande por arriba y abajo (Como el botón)
+  border-radius: 16px !important;   // Iguales esquinas al '.btn-buy' cuadrado suavizado
+}
+
+/* Botón inmenso principal (Acción primaria a resaltar por encima de Todo) */
+.btn-buy {
+  flex: 1;                          // Agarra absolutamente el 100% libre tras el número 80px
+  padding: 1rem !important;         // Ancho altísimo padding
+  font-size: 1.05rem !important;    // Letra clara ("AÑADIR AL CARRITO")
+  font-weight: 600 !important;      // Texto gordo fuerte (Convierte mucho mejor a ventas).
+  border-radius: 16px !important;   // Radio como el iOS (No redondo completo 'pill' para destacar de botones nav/header o de tabla).
+}
+
+/* Enlace menor de atrás sin estorbar ("⬅ Volver a todos") */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;                      // Con su SVG flechita 
+  margin-top: 2rem;                 // Lejos de las cosas de compra
+  color: var(--text-secondary);     // Clarito, de baja prioridad para la métrica del negocio.
+  font-weight: 500;
+  font-size: 0.95rem;
+}
