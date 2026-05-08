@@ -8,6 +8,11 @@ Crea una nueva rama local y te cambia a ella:
 git checkout -b nombre_de_tu_rama
 ```
 
+*(Importante: Para que esta nueva rama aparezca en la página web de GitHub, debes subirla ejecutando:)*
+```bash
+git push -u origin nombre_de_tu_rama
+```
+
 ### 2. Guardar (comitear) y subir a la rama actual
 Agrega los cambios, haz el commit y súbelos a GitHub:
 ```bash
