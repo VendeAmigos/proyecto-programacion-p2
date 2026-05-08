@@ -54,12 +54,12 @@ cd ../..
 ### 2. Compilar SASS de forma manual (una sola vez)
 Convierte el código `.scss` a `styles.css`.
 ```bash
-npx sass static/scss/styles.scss static/styles.css
+npx sass static/scss/styles.scss static/styles.css --silence-deprecation=import
 ```
 
 ### 3. Modo Observador (Watch) - RECOMENDADO
 Deja ejecutando SASS en segundo plano. Cada vez que guardes un archivo `.scss`, se compilará automáticamente a `.css`.
 ```bash
-npx sass --watch static/scss/styles.scss static/styles.css
+npx sass --watch static/scss/styles.scss static/styles.css --silence-deprecation=import
 ```
 *(Para detener este modo, presiona `Ctrl + C` en la terminal)*.
